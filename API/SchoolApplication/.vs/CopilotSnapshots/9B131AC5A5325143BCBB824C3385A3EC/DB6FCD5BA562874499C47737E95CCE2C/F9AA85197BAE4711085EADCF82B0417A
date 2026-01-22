@@ -1,0 +1,106 @@
+﻿using Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using SchoolApplication.Interface;
+using SchoolDomain.Entities;
+using System.Data;
+
+namespace SchoolInfrastructure.Repositories
+{
+    public class ClassSectionSubjectMapRepository : IClassSectionSubjectMapRepository
+    {
+        private readonly string _connectionString;
+        private readonly ILogger<ClassSectionSubjectMapRepository> _logger;
+
+        public ClassSectionSubjectMapRepository(IConfiguration configuration, ILogger<ClassSectionSubjectMapRepository> logger)
+        {
+            _connectionString = configuration.GetConnectionString("LiveDBContext") ?? string.Empty;
+            _logger = logger;
+
+            if (string.IsNullOrWhiteSpace(_connectionString))
+            {
+                throw new InvalidOperationException("Connection string 'LiveDBContext' is not configured. Configure it in appsettings.json or an environment variable.");
+            }
+        }
+
+        public async Task<string> MergeClassSectionSubjectMapAsync(ClassSectionSubjectMap classSectionSubjectMap)
+        {
+            try
+            {
+                await using var connection = new SqlConnection(_connectionString);
+                var parameters = new DynamicParameters();
+                parameters.Add("@EditId", classSectionSubjectMap.MapId);
+                parameters.Add("@ClassId", classSectionSubjectMap.ClassId);
+                parameters.Add("@SectionId", classSectionSubjectMap.SectionId);
+                parameters.Add("@SubjectId", classSectionSubjectMap.SubjectId);
+                parameters.Add("@AcadYearId", classSectionSubjectMap.AcademicYearId);
+                parameters.Add("@IsActive", classSectionSubjectMap.IsActive);
+                parameters.Add("@Remarks", classSectionSubjectMap.Remarks);
+                parameters.Add("@CreatedUserId", classSectionSubjectMap.CreatedUserId);
+                parameters.Add("@LoginId", classSectionSubjectMap.LoginId);
+                parameters.Add("@result", dbType: DbType.String, size: 350, direction: ParameterDirection.Output);
+
+                await connection.ExecuteAsync("SchoolAcad.MergeClassSectionSubjectMap",
+                    parameters, commandType: CommandType.StoredProcedure);
+
+                var result = parameters.Get<string>("@result") ?? string.Empty;
+                _logger.LogInformation("Class section subject map merged successfully. MapID: {MapId}", classSectionSubjectMap.MapId);
+                return result;
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Database error while merging ClassSectionSubjectMap (MapID={MapId})", classSectionSubjectMap?.MapId);
+                throw new InvalidOperationException("An error occurred while processing the class section subject map record.", ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error while merging ClassSectionSubjectMap (MapID={MapId})", classSectionSubjectMap?.MapId);
+                throw;
+            }
+        }
+
+        public async Task<(IEnumerable<ClassSectionSubjectMap> classSectionSubjectMaps, IEnumerable<SchoolInfo> SchoolDetails)> FetchClassSectionSubjectMapAsync(int classId, short acadYearId, int? sectionId)
+        {
+            try
+            {
+                await using var connection = new SqlConnection(_connectionString);
+                var parameters = new DynamicParameters();
+                parameters.Add("@ClassId", classId, DbType.Int32);
+                parameters.Add("@SectionId", sectionId, DbType.Int32);
+                parameters.Add("@AcadYearId", acadYearId, DbType.Int16);
+
+                await using var multi = await connection.QueryMultipleAsync(
+                    "[SchoolAcad].[FetchClassSectionSubjectMap]",
+                    parameters,
+                    commandType: CommandType.StoredProcedure);
+
+                // Materialize the first result set immediately
+                var classSectionSubjectMaps = (await multi.ReadAsync<ClassSectionSubjectMap>()).ToList();
+
+                // Try to read a second result set only if available
+                IEnumerable<SchoolInfo> schoolDetails = Enumerable.Empty<SchoolInfo>();
+                if (!multi.IsConsumed)
+                {
+                    schoolDetails = (await multi.ReadAsync<SchoolInfo>()).ToList();
+                }
+
+                _logger.LogInformation("Fetched {MapCount} class section subject maps successfully for class {ClassId}, academic year {AcadYearId}",
+                    classSectionSubjectMaps.Count, classId, acadYearId);
+                return (classSectionSubjectMaps, schoolDetails);
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Database error while fetching ClassSectionSubjectMap for class {ClassId}, academic year {AcadYearId}", classId, acadYearId);
+                throw new InvalidOperationException("An error occurred while fetching class section subject map records.", ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error while fetching ClassSectionSubjectMap for class {ClassId}, academic year {AcadYearId}", classId, acadYearId);
+                throw;
+            }
+        }
+    }
+}
+
+

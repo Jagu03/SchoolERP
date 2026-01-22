@@ -1,0 +1,60 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SchoolAPI.DTOs;
+using SchoolApplication.Interface;
+using SchoolDomain.Entities;
+using System.Collections;
+
+namespace SchoolAPI.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    [Authorize] // Default: Require authentication
+    public class ClassSectionAllocationController : CollectionBase
+    {
+        private readonly IClassSectionAllocationRepository _classSectionAllocationRepository;
+        private readonly ILogger<ClassSectionAllocationController> _logger;
+
+        public ClassSectionAllocationController(IClassSectionAllocationRepository classSectionAllocationRepository, ILogger<ClassSectionAllocationController> logger)
+        {
+            _classSectionAllocationRepository = classSectionAllocationRepository;
+            _logger = logger;
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> MergeAllocateClassSection([FromBody] ClassSectionAllocation classSectionAllocation)
+        {
+            // ModelState validation is automatic with [ApiController]
+            if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("Invalid model state for MergeAllocateClassSection");
+                return BadRequest(new ApiResponseDto<string>
+                {
+                    StatusCode = 400,
+                    Message = "Model validation failed.",
+                    Data = string.Join("; ", ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)))
+                });
+            }
+
+            try
+            {
+                var result = await _classSectionAllocationRepository.MergeAllocateClassSectionAsync(classSectionAllocation);
+
+                _logger.LogInformation("Class section allocation merged successfully. AllocationID: {AllocationId}", classSectionAllocation.alid);
+
+                return Ok(new ApiResponseDto<string>
+                {
+                    StatusCode = 200,
+                    Message = "Success",
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error merging ClassSectionAllocation (AllocationID={AllocationId})", classSectionAllocation?.alid);
+                throw; // Let GlobalExceptionMiddleware handle it
+            }
+        }
+    }
+}

@@ -1,0 +1,64 @@
+﻿using Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using SchoolApplication.Interface;
+using SchoolDomain.Entities;
+using System.Data;
+
+namespace SchoolInfrastructure.Repositories
+{
+    public class ClassSectionAllocationRepository : IClassSectionAllocationRepository
+    {
+        private readonly string _connectionString;
+        private readonly ILogger<ClassSectionAllocationRepository> _logger;
+
+        public ClassSectionAllocationRepository(IConfiguration configuration, ILogger<ClassSectionAllocationRepository> logger)
+        {
+            _connectionString = configuration.GetConnectionString("LiveDBContext") ?? string.Empty;
+            _logger = logger;
+
+            if (string.IsNullOrWhiteSpace(_connectionString))
+            {
+                throw new InvalidOperationException("Connection string 'LiveDBContext' is not configured. Configure it in appsettings.json or an environment variable.");
+            }
+        }
+
+        public async Task<string> MergeAllocateClassSectionAsync(ClassSectionAllocation classSectionAllocation)
+        {
+            if (classSectionAllocation == null)
+                throw new ArgumentNullException(nameof(classSectionAllocation));
+
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                var parameters = new DynamicParameters();
+                parameters.Add("@EditId", classSectionAllocation.AllocationId);
+                parameters.Add("@ClassId", classSectionAllocation.ClassId);
+                parameters.Add("@SectionId", classSectionAllocation.SectionId);
+                parameters.Add("@AcadYearId", classSectionAllocation.AcademicYearId);
+                parameters.Add("@IsActive", classSectionAllocation.IsActive);
+                parameters.Add("@Remarks", classSectionAllocation.Remarks);
+                parameters.Add("@CreatedUserId", classSectionAllocation.CreatedUserId);
+                parameters.Add("@LoginId", classSectionAllocation.LoginId);
+                parameters.Add("@result", dbType: DbType.String, size: 350, direction: ParameterDirection.Output);
+
+                await connection.ExecuteAsync("SchoolAcad.MergeClassSectionAllocation",
+                    parameters, commandType: CommandType.StoredProcedure);
+
+                return parameters.Get<string>("@result") ?? string.Empty;
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Database error while merging ClassSectionAllocation. AllocationID: {AllocationId}", classSectionAllocation.AllocationId);
+                throw new InvalidOperationException("An error occurred while processing the class section allocation.", ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error while merging ClassSectionAllocation. AllocationID: {AllocationId}", classSectionAllocation.AllocationId);
+                throw;
+            }
+        }
+    }
+}
+

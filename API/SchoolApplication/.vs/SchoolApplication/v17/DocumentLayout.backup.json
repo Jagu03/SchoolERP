@@ -1,0 +1,428 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Application\\SchoolApplication\\SchoolApplication\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{6D09B0E7-8650-435A-B945-7BF547B8D144}|SchoolDomain\\SchoolDomain.csproj|d:\\application\\schoolapplication\\schoolapplication\\schooldomain\\entities\\sectionmaster.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6D09B0E7-8650-435A-B945-7BF547B8D144}|SchoolDomain\\SchoolDomain.csproj|solutionrelative:schooldomain\\entities\\sectionmaster.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6D09B0E7-8650-435A-B945-7BF547B8D144}|SchoolDomain\\SchoolDomain.csproj|d:\\application\\schoolapplication\\schoolapplication\\schooldomain\\entities\\classmaster.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6D09B0E7-8650-435A-B945-7BF547B8D144}|SchoolDomain\\SchoolDomain.csproj|solutionrelative:schooldomain\\entities\\classmaster.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6D09B0E7-8650-435A-B945-7BF547B8D144}|SchoolDomain\\SchoolDomain.csproj|d:\\application\\schoolapplication\\schoolapplication\\schooldomain\\entities\\subjectmaster.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6D09B0E7-8650-435A-B945-7BF547B8D144}|SchoolDomain\\SchoolDomain.csproj|solutionrelative:schooldomain\\entities\\subjectmaster.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6D09B0E7-8650-435A-B945-7BF547B8D144}|SchoolDomain\\SchoolDomain.csproj|d:\\application\\schoolapplication\\schoolapplication\\schooldomain\\entities\\classsectionallocation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6D09B0E7-8650-435A-B945-7BF547B8D144}|SchoolDomain\\SchoolDomain.csproj|solutionrelative:schooldomain\\entities\\classsectionallocation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F1F6AF7F-F8FB-42D7-9F9D-D68ECF8776DF}|SchoolInfrastructure\\SchoolInfrastructure.csproj|d:\\application\\schoolapplication\\schoolapplication\\schoolinfrastructure\\repositories\\classmasterrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F1F6AF7F-F8FB-42D7-9F9D-D68ECF8776DF}|SchoolInfrastructure\\SchoolInfrastructure.csproj|solutionrelative:schoolinfrastructure\\repositories\\classmasterrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F1F6AF7F-F8FB-42D7-9F9D-D68ECF8776DF}|SchoolInfrastructure\\SchoolInfrastructure.csproj|d:\\application\\schoolapplication\\schoolapplication\\schoolinfrastructure\\repositories\\sectionmasterrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F1F6AF7F-F8FB-42D7-9F9D-D68ECF8776DF}|SchoolInfrastructure\\SchoolInfrastructure.csproj|solutionrelative:schoolinfrastructure\\repositories\\sectionmasterrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F1F6AF7F-F8FB-42D7-9F9D-D68ECF8776DF}|SchoolInfrastructure\\SchoolInfrastructure.csproj|d:\\application\\schoolapplication\\schoolapplication\\schoolinfrastructure\\repositories\\subjectmasterrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F1F6AF7F-F8FB-42D7-9F9D-D68ECF8776DF}|SchoolInfrastructure\\SchoolInfrastructure.csproj|solutionrelative:schoolinfrastructure\\repositories\\subjectmasterrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F1F6AF7F-F8FB-42D7-9F9D-D68ECF8776DF}|SchoolInfrastructure\\SchoolInfrastructure.csproj|d:\\application\\schoolapplication\\schoolapplication\\schoolinfrastructure\\repositories\\classsectionallocationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F1F6AF7F-F8FB-42D7-9F9D-D68ECF8776DF}|SchoolInfrastructure\\SchoolInfrastructure.csproj|solutionrelative:schoolinfrastructure\\repositories\\classsectionallocationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F1F6AF7F-F8FB-42D7-9F9D-D68ECF8776DF}|SchoolInfrastructure\\SchoolInfrastructure.csproj|d:\\application\\schoolapplication\\schoolapplication\\schoolinfrastructure\\repositories\\classsectionsubjectmaprepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F1F6AF7F-F8FB-42D7-9F9D-D68ECF8776DF}|SchoolInfrastructure\\SchoolInfrastructure.csproj|solutionrelative:schoolinfrastructure\\repositories\\classsectionsubjectmaprepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{95B9AD61-EC2C-4B4C-9E8F-F3D593AD20C2}|SchoolAPI\\SchoolAPI.csproj|d:\\application\\schoolapplication\\schoolapplication\\schoolapi\\controllers\\classmastercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{95B9AD61-EC2C-4B4C-9E8F-F3D593AD20C2}|SchoolAPI\\SchoolAPI.csproj|solutionrelative:schoolapi\\controllers\\classmastercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{95B9AD61-EC2C-4B4C-9E8F-F3D593AD20C2}|SchoolAPI\\SchoolAPI.csproj|d:\\application\\schoolapplication\\schoolapplication\\schoolapi\\controllers\\sectionmastercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{95B9AD61-EC2C-4B4C-9E8F-F3D593AD20C2}|SchoolAPI\\SchoolAPI.csproj|solutionrelative:schoolapi\\controllers\\sectionmastercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{95B9AD61-EC2C-4B4C-9E8F-F3D593AD20C2}|SchoolAPI\\SchoolAPI.csproj|d:\\application\\schoolapplication\\schoolapplication\\schoolapi\\controllers\\subjectmastercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{95B9AD61-EC2C-4B4C-9E8F-F3D593AD20C2}|SchoolAPI\\SchoolAPI.csproj|solutionrelative:schoolapi\\controllers\\subjectmastercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{95B9AD61-EC2C-4B4C-9E8F-F3D593AD20C2}|SchoolAPI\\SchoolAPI.csproj|d:\\application\\schoolapplication\\schoolapplication\\schoolapi\\controllers\\classsectionallocationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{95B9AD61-EC2C-4B4C-9E8F-F3D593AD20C2}|SchoolAPI\\SchoolAPI.csproj|solutionrelative:schoolapi\\controllers\\classsectionallocationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{95B9AD61-EC2C-4B4C-9E8F-F3D593AD20C2}|SchoolAPI\\SchoolAPI.csproj|d:\\application\\schoolapplication\\schoolapplication\\schoolapi\\controllers\\classsectionsubjectmapcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{95B9AD61-EC2C-4B4C-9E8F-F3D593AD20C2}|SchoolAPI\\SchoolAPI.csproj|solutionrelative:schoolapi\\controllers\\classsectionsubjectmapcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ADE3BF08-CE02-425C-8A59-971B866AB573}|SchoolApplication\\SchoolApplication.csproj|d:\\application\\schoolapplication\\schoolapplication\\schoolapplication\\interface\\iclasssectionallocationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ADE3BF08-CE02-425C-8A59-971B866AB573}|SchoolApplication\\SchoolApplication.csproj|solutionrelative:schoolapplication\\interface\\iclasssectionallocationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ADE3BF08-CE02-425C-8A59-971B866AB573}|SchoolApplication\\SchoolApplication.csproj|d:\\application\\schoolapplication\\schoolapplication\\schoolapplication\\interface\\iclasssectionsubjectmaprepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ADE3BF08-CE02-425C-8A59-971B866AB573}|SchoolApplication\\SchoolApplication.csproj|solutionrelative:schoolapplication\\interface\\iclasssectionsubjectmaprepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ADE3BF08-CE02-425C-8A59-971B866AB573}|SchoolApplication\\SchoolApplication.csproj|d:\\application\\schoolapplication\\schoolapplication\\schoolapplication\\interface\\isectionmasterrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ADE3BF08-CE02-425C-8A59-971B866AB573}|SchoolApplication\\SchoolApplication.csproj|solutionrelative:schoolapplication\\interface\\isectionmasterrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ADE3BF08-CE02-425C-8A59-971B866AB573}|SchoolApplication\\SchoolApplication.csproj|d:\\application\\schoolapplication\\schoolapplication\\schoolapplication\\interface\\isubjectmasterrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ADE3BF08-CE02-425C-8A59-971B866AB573}|SchoolApplication\\SchoolApplication.csproj|solutionrelative:schoolapplication\\interface\\isubjectmasterrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{95B9AD61-EC2C-4B4C-9E8F-F3D593AD20C2}|SchoolAPI\\SchoolAPI.csproj|d:\\application\\schoolapplication\\schoolapplication\\schoolapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{95B9AD61-EC2C-4B4C-9E8F-F3D593AD20C2}|SchoolAPI\\SchoolAPI.csproj|solutionrelative:schoolapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6D09B0E7-8650-435A-B945-7BF547B8D144}|SchoolDomain\\SchoolDomain.csproj|d:\\application\\schoolapplication\\schoolapplication\\schooldomain\\entities\\classsectionsubjectmap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6D09B0E7-8650-435A-B945-7BF547B8D144}|SchoolDomain\\SchoolDomain.csproj|solutionrelative:schooldomain\\entities\\classsectionsubjectmap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Application\\SchoolApplication\\SchoolApplication\\STRUCTURAL_IMPROVEMENTS_SUMMARY.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:STRUCTURAL_IMPROVEMENTS_SUMMARY.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Application\\SchoolApplication\\SchoolApplication\\BEFORE_AND_AFTER_EXAMPLES.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:BEFORE_AND_AFTER_EXAMPLES.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Application\\SchoolApplication\\SchoolApplication\\QUICK_REFERENCE.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:QUICK_REFERENCE.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Application\\SchoolApplication\\SchoolApplication\\EXECUTIVE_SUMMARY.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:EXECUTIVE_SUMMARY.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 22,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "EXECUTIVE_SUMMARY.md",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\EXECUTIVE_SUMMARY.md",
+              "RelativeDocumentMoniker": "EXECUTIVE_SUMMARY.md",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\EXECUTIVE_SUMMARY.md",
+              "RelativeToolTip": "EXECUTIVE_SUMMARY.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACsBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-01-22T10:59:30.193Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "QUICK_REFERENCE.md",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\QUICK_REFERENCE.md",
+              "RelativeDocumentMoniker": "QUICK_REFERENCE.md",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\QUICK_REFERENCE.md",
+              "RelativeToolTip": "QUICK_REFERENCE.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-01-22T10:59:05.95Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "BEFORE_AND_AFTER_EXAMPLES.md",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\BEFORE_AND_AFTER_EXAMPLES.md",
+              "RelativeDocumentMoniker": "BEFORE_AND_AFTER_EXAMPLES.md",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\BEFORE_AND_AFTER_EXAMPLES.md",
+              "RelativeToolTip": "BEFORE_AND_AFTER_EXAMPLES.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAL0BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-01-22T10:58:39.729Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "STRUCTURAL_IMPROVEMENTS_SUMMARY.md",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\STRUCTURAL_IMPROVEMENTS_SUMMARY.md",
+              "RelativeDocumentMoniker": "STRUCTURAL_IMPROVEMENTS_SUMMARY.md",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\STRUCTURAL_IMPROVEMENTS_SUMMARY.md",
+              "RelativeToolTip": "STRUCTURAL_IMPROVEMENTS_SUMMARY.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHMBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-01-22T10:58:08.733Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "ClassSectionSubjectMap.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolDomain\\Entities\\ClassSectionSubjectMap.cs",
+              "RelativeDocumentMoniker": "SchoolDomain\\Entities\\ClassSectionSubjectMap.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolDomain\\Entities\\ClassSectionSubjectMap.cs",
+              "RelativeToolTip": "SchoolDomain\\Entities\\ClassSectionSubjectMap.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAIBJwAIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:57:08.521Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolAPI\\Program.cs",
+              "RelativeDocumentMoniker": "SchoolAPI\\Program.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolAPI\\Program.cs",
+              "RelativeToolTip": "SchoolAPI\\Program.cs",
+              "ViewState": "AgIAAKQAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:55:12.115Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "ISubjectMasterRepository.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolApplication\\Interface\\ISubjectMasterRepository.cs",
+              "RelativeDocumentMoniker": "SchoolApplication\\Interface\\ISubjectMasterRepository.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolApplication\\Interface\\ISubjectMasterRepository.cs",
+              "RelativeToolTip": "SchoolApplication\\Interface\\ISubjectMasterRepository.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAABQwAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:55:00.669Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "ISectionMasterRepository.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolApplication\\Interface\\ISectionMasterRepository.cs",
+              "RelativeDocumentMoniker": "SchoolApplication\\Interface\\ISectionMasterRepository.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolApplication\\Interface\\ISectionMasterRepository.cs",
+              "RelativeToolTip": "SchoolApplication\\Interface\\ISectionMasterRepository.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAABQwAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:54:46.371Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "IClassSectionSubjectMapRepository.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolApplication\\Interface\\IClassSectionSubjectMapRepository.cs",
+              "RelativeDocumentMoniker": "SchoolApplication\\Interface\\IClassSectionSubjectMapRepository.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolApplication\\Interface\\IClassSectionSubjectMapRepository.cs",
+              "RelativeToolTip": "SchoolApplication\\Interface\\IClassSectionSubjectMapRepository.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAABQwAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:54:39.619Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "IClassSectionAllocationRepository.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolApplication\\Interface\\IClassSectionAllocationRepository.cs",
+              "RelativeDocumentMoniker": "SchoolApplication\\Interface\\IClassSectionAllocationRepository.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolApplication\\Interface\\IClassSectionAllocationRepository.cs",
+              "RelativeToolTip": "SchoolApplication\\Interface\\IClassSectionAllocationRepository.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAABQwAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:54:30.568Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "ClassSectionSubjectMapController.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolAPI\\Controllers\\ClassSectionSubjectMapController.cs",
+              "RelativeDocumentMoniker": "SchoolAPI\\Controllers\\ClassSectionSubjectMapController.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolAPI\\Controllers\\ClassSectionSubjectMapController.cs",
+              "RelativeToolTip": "SchoolAPI\\Controllers\\ClassSectionSubjectMapController.cs",
+              "ViewState": "AgIAAF0AAAAAAAAAAIBJwF8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:54:16.716Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "ClassSectionAllocationController.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolAPI\\Controllers\\ClassSectionAllocationController.cs",
+              "RelativeDocumentMoniker": "SchoolAPI\\Controllers\\ClassSectionAllocationController.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolAPI\\Controllers\\ClassSectionAllocationController.cs",
+              "RelativeToolTip": "SchoolAPI\\Controllers\\ClassSectionAllocationController.cs",
+              "ViewState": "AgIAAC0AAAAAAAAAAABBwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:53:56.524Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "SubjectMasterController.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolAPI\\Controllers\\SubjectMasterController.cs",
+              "RelativeDocumentMoniker": "SchoolAPI\\Controllers\\SubjectMasterController.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolAPI\\Controllers\\SubjectMasterController.cs",
+              "RelativeToolTip": "SchoolAPI\\Controllers\\SubjectMasterController.cs",
+              "ViewState": "AgIAACgAAAAAAAAAAABBwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:53:41.638Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "SectionMasterController.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolAPI\\Controllers\\SectionMasterController.cs",
+              "RelativeDocumentMoniker": "SchoolAPI\\Controllers\\SectionMasterController.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolAPI\\Controllers\\SectionMasterController.cs",
+              "RelativeToolTip": "SchoolAPI\\Controllers\\SectionMasterController.cs",
+              "ViewState": "AgIAACgAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:53:31.991Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ClassMaster.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolDomain\\Entities\\ClassMaster.cs",
+              "RelativeDocumentMoniker": "SchoolDomain\\Entities\\ClassMaster.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolDomain\\Entities\\ClassMaster.cs",
+              "RelativeToolTip": "SchoolDomain\\Entities\\ClassMaster.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:53:28.276Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "ClassMasterController.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolAPI\\Controllers\\ClassMasterController.cs",
+              "RelativeDocumentMoniker": "SchoolAPI\\Controllers\\ClassMasterController.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolAPI\\Controllers\\ClassMasterController.cs",
+              "RelativeToolTip": "SchoolAPI\\Controllers\\ClassMasterController.cs",
+              "ViewState": "AgIAAC0AAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:53:21.773Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ClassSectionSubjectMapRepository.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolInfrastructure\\Repositories\\ClassSectionSubjectMapRepository.cs",
+              "RelativeDocumentMoniker": "SchoolInfrastructure\\Repositories\\ClassSectionSubjectMapRepository.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolInfrastructure\\Repositories\\ClassSectionSubjectMapRepository.cs",
+              "RelativeToolTip": "SchoolInfrastructure\\Repositories\\ClassSectionSubjectMapRepository.cs",
+              "ViewState": "AgIAAGUAAAAAAAAAAIBJwGcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:53:11.214Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ClassSectionAllocationRepository.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolInfrastructure\\Repositories\\ClassSectionAllocationRepository.cs",
+              "RelativeDocumentMoniker": "SchoolInfrastructure\\Repositories\\ClassSectionAllocationRepository.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolInfrastructure\\Repositories\\ClassSectionAllocationRepository.cs",
+              "RelativeToolTip": "SchoolInfrastructure\\Repositories\\ClassSectionAllocationRepository.cs",
+              "ViewState": "AgIAAEEAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:52:45.5Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "SubjectMasterRepository.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolInfrastructure\\Repositories\\SubjectMasterRepository.cs",
+              "RelativeDocumentMoniker": "SchoolInfrastructure\\Repositories\\SubjectMasterRepository.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolInfrastructure\\Repositories\\SubjectMasterRepository.cs",
+              "RelativeToolTip": "SchoolInfrastructure\\Repositories\\SubjectMasterRepository.cs",
+              "ViewState": "AgIAAFsAAAAAAAAAAIBJwF0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:52:37.884Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "SectionMasterRepository.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolInfrastructure\\Repositories\\SectionMasterRepository.cs",
+              "RelativeDocumentMoniker": "SchoolInfrastructure\\Repositories\\SectionMasterRepository.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolInfrastructure\\Repositories\\SectionMasterRepository.cs",
+              "RelativeToolTip": "SchoolInfrastructure\\Repositories\\SectionMasterRepository.cs",
+              "ViewState": "AgIAACQAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:52:24.385Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ClassMasterRepository.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolInfrastructure\\Repositories\\ClassMasterRepository.cs",
+              "RelativeDocumentMoniker": "SchoolInfrastructure\\Repositories\\ClassMasterRepository.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolInfrastructure\\Repositories\\ClassMasterRepository.cs",
+              "RelativeToolTip": "SchoolInfrastructure\\Repositories\\ClassMasterRepository.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:52:15.857Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ClassSectionAllocation.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolDomain\\Entities\\ClassSectionAllocation.cs",
+              "RelativeDocumentMoniker": "SchoolDomain\\Entities\\ClassSectionAllocation.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolDomain\\Entities\\ClassSectionAllocation.cs",
+              "RelativeToolTip": "SchoolDomain\\Entities\\ClassSectionAllocation.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAIBJwAIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:52:07.549Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SectionMaster.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolDomain\\Entities\\SectionMaster.cs",
+              "RelativeDocumentMoniker": "SchoolDomain\\Entities\\SectionMaster.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolDomain\\Entities\\SectionMaster.cs",
+              "RelativeToolTip": "SchoolDomain\\Entities\\SectionMaster.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAUwBYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:51:51.568Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SubjectMaster.cs",
+              "DocumentMoniker": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolDomain\\Entities\\SubjectMaster.cs",
+              "RelativeDocumentMoniker": "SchoolDomain\\Entities\\SubjectMaster.cs",
+              "ToolTip": "D:\\Application\\SchoolApplication\\SchoolApplication\\SchoolDomain\\Entities\\SubjectMaster.cs",
+              "RelativeToolTip": "SchoolDomain\\Entities\\SubjectMaster.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T10:51:50.286Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

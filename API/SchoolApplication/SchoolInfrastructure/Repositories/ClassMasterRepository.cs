@@ -1,0 +1,77 @@
+﻿using Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using SchoolApplication.Interface;
+using SchoolDomain.Entities;
+using System.Data;
+
+namespace SchoolInfrastructure.Repositories
+{
+    public class ClassMasterRepository : IClassMasterRepository
+    {
+        private readonly string _connectionString;
+        private readonly ILogger<ClassMasterRepository> _logger;
+
+        public ClassMasterRepository(IConfiguration configuration, ILogger<ClassMasterRepository> logger)
+        {
+            _connectionString = configuration.GetConnectionString("LiveDBContext") ?? string.Empty;
+            _logger = logger;
+
+            if (string.IsNullOrWhiteSpace(_connectionString))
+            {
+                throw new InvalidOperationException("Connection string 'LiveDBContext' is not configured. Configure it in appsettings.json or an environment variable.");
+            }
+        }
+
+        public async Task<string> MergeClassMasterAsync(ClassMaster classMaster)
+        {          
+                await using var connection = new SqlConnection(_connectionString);
+                var parameters = new DynamicParameters();
+                parameters.Add("@EditId", classMaster.ClsId);
+                parameters.Add("@ClassName", classMaster.txt);
+                parameters.Add("@DisplayOrder", classMaster.dpyor);
+                parameters.Add("@IsActive", classMaster.isc);
+                parameters.Add("@Remarks", classMaster.rmk);
+                parameters.Add("@CreatedUserId", classMaster.cuid);
+                parameters.Add("@LoginId", classMaster.Logid);
+                parameters.Add("@result", dbType: DbType.String, size: 350, direction: ParameterDirection.Output);
+
+                await connection.ExecuteAsync("SchoolAcad.MergeClassMaster",
+                    parameters, commandType: CommandType.StoredProcedure);
+
+                return parameters.Get<string>("@result") ?? string.Empty;         
+        }
+
+        public async Task<(IEnumerable<ClassMaster> classes, IEnumerable<SchoolInfo> School)> FetchClassMasterAsync()
+        {
+            try
+            {
+                await using var connection = new SqlConnection(_connectionString);
+                await using var multi = await connection.QueryMultipleAsync(
+                    "[SchoolAcad].[FetchClassMaster]", commandType: CommandType.StoredProcedure);
+
+                var classes = (await multi.ReadAsync<ClassMaster>()).ToList();
+
+                IEnumerable<SchoolInfo> school = Enumerable.Empty<SchoolInfo>();
+                if (!multi.IsConsumed)
+                {
+                    school = (await multi.ReadAsync<SchoolInfo>()).ToList();
+                }
+
+                _logger.LogInformation("Fetched {ClassCount} classes successfully", classes.Count);
+                return (classes, school);
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Database error while fetching ClassMaster");
+                throw new InvalidOperationException("An error occurred while fetching class master records.", ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error while fetching ClassMaster");
+                throw;
+            }
+        }
+    }
+}

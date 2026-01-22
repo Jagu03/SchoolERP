@@ -1,0 +1,15 @@
+﻿using SchoolDomain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SchoolApplication.Interface
+{
+    public interface IClassSectionSubjectMapRepository
+    {
+        Task<string> MergeClassSectionSubjectMapAsync(ClassSectionSubjectMap classSectionSubjectMap);
+        Task<(IEnumerable<ClassSectionSubjectMap> classSectionSubjectMaps, IEnumerable<SchoolInfo> SchoolDetails)> FetchClassSectionSubjectMapAsync(int classId,short acadYearId,int? sectionId);        
+    }
+}

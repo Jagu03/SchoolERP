@@ -1,0 +1,17 @@
+D:\Application\SchoolApplication\SchoolApplication\SchoolInfrastructure\bin\Debug\net8.0\SchoolInfrastructure.deps.json
+D:\Application\SchoolApplication\SchoolApplication\SchoolInfrastructure\bin\Debug\net8.0\SchoolInfrastructure.dll
+D:\Application\SchoolApplication\SchoolApplication\SchoolInfrastructure\bin\Debug\net8.0\SchoolInfrastructure.pdb
+D:\Application\SchoolApplication\SchoolApplication\SchoolInfrastructure\bin\Debug\net8.0\SchoolApplication.dll
+D:\Application\SchoolApplication\SchoolApplication\SchoolInfrastructure\bin\Debug\net8.0\SchoolDomain.dll
+D:\Application\SchoolApplication\SchoolApplication\SchoolInfrastructure\bin\Debug\net8.0\SchoolApplication.pdb
+D:\Application\SchoolApplication\SchoolApplication\SchoolInfrastructure\bin\Debug\net8.0\SchoolDomain.pdb
+D:\Application\SchoolApplication\SchoolApplication\SchoolInfrastructure\obj\Debug\net8.0\SchoolInfrastructure.csproj.AssemblyReference.cache
+D:\Application\SchoolApplication\SchoolApplication\SchoolInfrastructure\obj\Debug\net8.0\SchoolInfrastructure.GeneratedMSBuildEditorConfig.editorconfig
+D:\Application\SchoolApplication\SchoolApplication\SchoolInfrastructure\obj\Debug\net8.0\SchoolInfrastructure.AssemblyInfoInputs.cache
+D:\Application\SchoolApplication\SchoolApplication\SchoolInfrastructure\obj\Debug\net8.0\SchoolInfrastructure.AssemblyInfo.cs
+D:\Application\SchoolApplication\SchoolApplication\SchoolInfrastructure\obj\Debug\net8.0\SchoolInfrastructure.csproj.CoreCompileInputs.cache
+D:\Application\SchoolApplication\SchoolApplication\SchoolInfrastructure\obj\Debug\net8.0\SchoolIn.7F9DD6A5.Up2Date
+D:\Application\SchoolApplication\SchoolApplication\SchoolInfrastructure\obj\Debug\net8.0\SchoolInfrastructure.dll
+D:\Application\SchoolApplication\SchoolApplication\SchoolInfrastructure\obj\Debug\net8.0\refint\SchoolInfrastructure.dll
+D:\Application\SchoolApplication\SchoolApplication\SchoolInfrastructure\obj\Debug\net8.0\SchoolInfrastructure.pdb
+D:\Application\SchoolApplication\SchoolApplication\SchoolInfrastructure\obj\Debug\net8.0\ref\SchoolInfrastructure.dll

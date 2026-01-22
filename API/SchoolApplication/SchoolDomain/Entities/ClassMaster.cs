@@ -1,0 +1,38 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SchoolDomain.Entities
+{
+    public class ClassMaster
+    {
+        public int ClsId { get; set; }
+
+        [Required(ErrorMessage = "Class name is required.")]
+        [StringLength(100, MinimumLength = 1, ErrorMessage = "Class name must be between 1 and 100 characters.")]
+        public string txt { get; set; } = string.Empty;
+
+        [Range(0, 99, ErrorMessage = "Display order must be between 0 and 99.")]
+        public int dpyor { get; set; }
+
+        [Range(0, 1, ErrorMessage = "IsActive must be 0 or 1.")]
+        public byte isc { get; set; }
+
+        [StringLength(500, ErrorMessage = "Remarks cannot exceed 500 characters.")]
+        public string rmk { get; set; } = string.Empty;
+
+        [Range(1, short.MaxValue, ErrorMessage = "Created User ID must be greater than 0.")]
+        public short cuid { get; set; }
+
+        [Range(1, long.MaxValue, ErrorMessage = "Login ID must be greater than 0.")]
+        public long Logid { get; set; }
+    }
+
+    public class SchoolInfo
+    {
+        public int spid { get; set; }
+        public string spn { get; set; } = string.Empty;
+        public string ayn { get; set; } = string.Empty;
+        public string ifn { get; set; } = string.Empty;
+        public string isn { get; set; } = string.Empty;
+        public string lc { get; set; } = string.Empty;
+    }
+}

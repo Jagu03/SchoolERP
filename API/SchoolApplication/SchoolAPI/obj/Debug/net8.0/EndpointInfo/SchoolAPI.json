@@ -1,0 +1,502 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "SchoolAPI",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/ClassMaster/MergeClassMaster": {
+      "post": {
+        "tags": [
+          "ClassMaster"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClassMaster"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClassMaster"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClassMaster"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ClassMaster/Fetch": {
+      "get": {
+        "tags": [
+          "ClassMaster"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ClassSectionAllocation": {
+      "post": {
+        "tags": [
+          "ClassSectionAllocation"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClassSectionAllocation"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClassSectionAllocation"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClassSectionAllocation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ClassSectionAllocation/FetchClassSectionAllocations": {
+      "get": {
+        "tags": [
+          "ClassSectionAllocation"
+        ],
+        "parameters": [
+          {
+            "name": "acadYearId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ClassSectionSubjectMap": {
+      "post": {
+        "tags": [
+          "ClassSectionSubjectMap"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClassSectionSubjectMap"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClassSectionSubjectMap"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClassSectionSubjectMap"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ClassSectionSubjectMap/FetchClassSectionSubjectMap": {
+      "get": {
+        "tags": [
+          "ClassSectionSubjectMap"
+        ],
+        "parameters": [
+          {
+            "name": "classId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "acadYearId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "sectionId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/SectionMaster": {
+      "post": {
+        "tags": [
+          "SectionMaster"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SectionMaster"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SectionMaster"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SectionMaster"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/SectionMaster/Fetch": {
+      "get": {
+        "tags": [
+          "SectionMaster"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/SubjectMaster": {
+      "post": {
+        "tags": [
+          "SubjectMaster"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubjectMaster"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubjectMaster"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubjectMaster"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/SubjectMaster/FetchSubjectMaster": {
+      "get": {
+        "tags": [
+          "SubjectMaster"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ClassMaster": {
+        "required": [
+          "txt"
+        ],
+        "type": "object",
+        "properties": {
+          "clsId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "txt": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "dpyor": {
+            "maximum": 99,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "isc": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "rmk": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "cuid": {
+            "maximum": 32767,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "logid": {
+            "minimum": 1,
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ClassSectionAllocation": {
+        "type": "object",
+        "properties": {
+          "alid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "clsid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "secid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ayid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isc": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rmk": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "cuid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "logid": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ClassSectionSubjectMap": {
+        "type": "object",
+        "properties": {
+          "mapid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "clsid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "subid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "secid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ayid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "txt": {
+            "type": "string",
+            "nullable": true
+          },
+          "secn": {
+            "type": "string",
+            "nullable": true
+          },
+          "ftxt": {
+            "type": "string",
+            "nullable": true
+          },
+          "isn": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rmk": {
+            "type": "string",
+            "nullable": true
+          },
+          "cuid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sessid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "logid": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SectionMaster": {
+        "required": [
+          "txt"
+        ],
+        "type": "object",
+        "properties": {
+          "secId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "txt": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "isc": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cuid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "logid": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SubjectMaster": {
+        "required": [
+          "txt"
+        ],
+        "type": "object",
+        "properties": {
+          "subid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "txt": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "subcode": {
+            "type": "string",
+            "nullable": true
+          },
+          "shorttxt": {
+            "maxLength": 20,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "isc": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stypid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ftxt": {
+            "type": "string",
+            "nullable": true
+          },
+          "rmk": {
+            "type": "string",
+            "nullable": true
+          },
+          "cuid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "logid": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "JWT Authorization header using the Bearer scheme.",
+        "scheme": "Bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
+}

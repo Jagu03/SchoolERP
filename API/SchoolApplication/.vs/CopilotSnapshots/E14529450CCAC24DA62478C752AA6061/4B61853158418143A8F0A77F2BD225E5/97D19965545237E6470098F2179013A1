@@ -1,0 +1,21 @@
+﻿{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "LiveDBContext": "Server=YOUR_SERVER;Database=YOUR_DATABASE;User Id=YOUR_USER;Password=YOUR_PASSWORD;Encrypt=true;TrustServerCertificate=false;"
+  },
+  "JwtSettings": {
+    "SecretKey": "your-256-bit-secret-key-min-32-characters-for-security-SchoolApp2024",
+    "Issuer": "SchoolAPI",
+    "Audience": "SchoolAPIUsers",
+    "ExpirationMinutes": 60
+  },
+  "CorsSettings": {
+    "AllowedOrigins": "http://localhost:3000,http://localhost:4200,https://yourdomain.com"
+  }
+}

@@ -1,0 +1,119 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SchoolAPI.DTOs;
+using SchoolApplication.Interface;
+using SchoolDomain.Entities;
+
+namespace SchoolAPI.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    [Authorize]
+    public class ClassMasterController : ControllerBase
+    {
+        private readonly IClassMasterRepository _classMasterRepository;
+        private readonly ILogger<ClassMasterController> _logger;
+
+        public ClassMasterController(IClassMasterRepository classMasterRepository, ILogger<ClassMasterController> logger)
+        {
+            _classMasterRepository = classMasterRepository;
+            _logger = logger;
+        }
+
+        [HttpPost("MergeClassMaster")]
+        public async Task<IActionResult> MergeClassMaster([FromBody] ClassMaster classMaster)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = string.Join("; ", ModelState.Values
+                    .SelectMany(v => v.Errors.Select(e => e.ErrorMessage)));
+                
+                _logger.LogWarning("Invalid model state for MergeClassMaster. Errors: {Errors}", errors);
+                
+                return BadRequest(new ApiResponseDto<string>
+                {
+                    StatusCode = 400,
+                    Message = "Model validation failed.",
+                    Data = errors
+                });
+            }
+
+            try
+            {
+                var result = await _classMasterRepository.MergeClassMasterAsync(classMaster);
+
+                _logger.LogInformation("Class merged successfully. ClassID: {ClassId}", classMaster.ClassId);
+
+                return Ok(new ApiResponseDto<string>
+                {
+                    StatusCode = 200,
+                    Message = "Class master record processed successfully.",
+                    Data = result
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "Error merging ClassMaster (ClassID={ClassId})", classMaster?.ClassId);
+                return StatusCode(500, new ApiResponseDto<string>
+                {
+                    StatusCode = 500,
+                    Message = "An error occurred while processing your request.",
+                    Data = null
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error merging ClassMaster (ClassID={ClassId})", classMaster?.ClassId);
+                return StatusCode(500, new ApiResponseDto<string>
+                {
+                    StatusCode = 500,
+                    Message = "An unexpected error occurred.",
+                    Data = null
+                });
+            }
+        }
+
+        [HttpGet("Fetch")]
+        [AllowAnonymous]
+        public async Task<IActionResult> FetchClassMaster()
+        {
+            try
+            {
+                var data = await _classMasterRepository.FetchClassMasterAsync();
+
+                _logger.LogInformation("Fetched {ClassCount} classes", data.classes.Count());
+
+                return Ok(new ApiResponseDto<object>
+                {
+                    StatusCode = 200,
+                    Message = "Success",
+                    Data = new
+                    {
+                        ClassMaster = data.classes,
+                        SchoolInfo = data.School
+                    }
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "Error fetching ClassMaster");
+                return StatusCode(500, new ApiResponseDto<string>
+                {
+                    StatusCode = 500,
+                    Message = "An error occurred while retrieving class master records.",
+                    Data = null
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error fetching ClassMaster");
+                return StatusCode(500, new ApiResponseDto<string>
+                {
+                    StatusCode = 500,
+                    Message = "An unexpected error occurred.",
+                    Data = null
+                });
+            }
+        }
+    }
+}

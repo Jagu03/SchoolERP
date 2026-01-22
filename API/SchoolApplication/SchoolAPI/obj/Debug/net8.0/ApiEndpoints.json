@@ -1,0 +1,154 @@
+[
+  {
+    "ContainingType": "SchoolAPI.Controllers.ClassMasterController",
+    "Method": "FetchClassMaster",
+    "RelativePath": "api/ClassMaster/Fetch",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SchoolAPI.Controllers.ClassMasterController",
+    "Method": "MergeClassMaster",
+    "RelativePath": "api/ClassMaster/MergeClassMaster",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "classMaster",
+        "Type": "SchoolDomain.Entities.ClassMaster",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SchoolAPI.Controllers.ClassSectionAllocationController",
+    "Method": "MergeAllocateClassSection",
+    "RelativePath": "api/ClassSectionAllocation",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "classSectionAllocation",
+        "Type": "SchoolDomain.Entities.ClassSectionAllocation",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SchoolAPI.Controllers.ClassSectionAllocationController",
+    "Method": "FetchClassSectionAllocations",
+    "RelativePath": "api/ClassSectionAllocation/FetchClassSectionAllocations",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "acadYearId",
+        "Type": "System.Int16",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SchoolAPI.Controllers.ClassSectionSubjectMapController",
+    "Method": "MergeClassSectionSubjectMap",
+    "RelativePath": "api/ClassSectionSubjectMap",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "classSectionSubjectMap",
+        "Type": "SchoolDomain.Entities.ClassSectionSubjectMap",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SchoolAPI.Controllers.ClassSectionSubjectMapController",
+    "Method": "FetchClassSectionSubjectMap",
+    "RelativePath": "api/ClassSectionSubjectMap/FetchClassSectionSubjectMap",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "classId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "acadYearId",
+        "Type": "System.Int16",
+        "IsRequired": false
+      },
+      {
+        "Name": "sectionId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SchoolAPI.Controllers.SectionMasterController",
+    "Method": "MergeSectionMaster",
+    "RelativePath": "api/SectionMaster",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sectionMaster",
+        "Type": "SchoolDomain.Entities.SectionMaster",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SchoolAPI.Controllers.SectionMasterController",
+    "Method": "FetchSectionMaster",
+    "RelativePath": "api/SectionMaster/Fetch",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SchoolAPI.Controllers.SubjectMasterController",
+    "Method": "MergeSubjectMaster",
+    "RelativePath": "api/SubjectMaster",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "subjectMaster",
+        "Type": "SchoolDomain.Entities.SubjectMaster",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SchoolAPI.Controllers.SubjectMasterController",
+    "Method": "FetchSubjectMaster",
+    "RelativePath": "api/SubjectMaster/FetchSubjectMaster",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]

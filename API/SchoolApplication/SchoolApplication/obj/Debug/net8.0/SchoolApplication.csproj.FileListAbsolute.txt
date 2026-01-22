@@ -1,0 +1,15 @@
+D:\Application\SchoolApplication\SchoolApplication\SchoolApplication\bin\Debug\net8.0\SchoolApplication.deps.json
+D:\Application\SchoolApplication\SchoolApplication\SchoolApplication\bin\Debug\net8.0\SchoolApplication.dll
+D:\Application\SchoolApplication\SchoolApplication\SchoolApplication\bin\Debug\net8.0\SchoolApplication.pdb
+D:\Application\SchoolApplication\SchoolApplication\SchoolApplication\bin\Debug\net8.0\SchoolDomain.dll
+D:\Application\SchoolApplication\SchoolApplication\SchoolApplication\bin\Debug\net8.0\SchoolDomain.pdb
+D:\Application\SchoolApplication\SchoolApplication\SchoolApplication\obj\Debug\net8.0\SchoolApplication.csproj.AssemblyReference.cache
+D:\Application\SchoolApplication\SchoolApplication\SchoolApplication\obj\Debug\net8.0\SchoolApplication.GeneratedMSBuildEditorConfig.editorconfig
+D:\Application\SchoolApplication\SchoolApplication\SchoolApplication\obj\Debug\net8.0\SchoolApplication.AssemblyInfoInputs.cache
+D:\Application\SchoolApplication\SchoolApplication\SchoolApplication\obj\Debug\net8.0\SchoolApplication.AssemblyInfo.cs
+D:\Application\SchoolApplication\SchoolApplication\SchoolApplication\obj\Debug\net8.0\SchoolApplication.csproj.CoreCompileInputs.cache
+D:\Application\SchoolApplication\SchoolApplication\SchoolApplication\obj\Debug\net8.0\SchoolAp.1A2617B3.Up2Date
+D:\Application\SchoolApplication\SchoolApplication\SchoolApplication\obj\Debug\net8.0\SchoolApplication.dll
+D:\Application\SchoolApplication\SchoolApplication\SchoolApplication\obj\Debug\net8.0\refint\SchoolApplication.dll
+D:\Application\SchoolApplication\SchoolApplication\SchoolApplication\obj\Debug\net8.0\SchoolApplication.pdb
+D:\Application\SchoolApplication\SchoolApplication\SchoolApplication\obj\Debug\net8.0\ref\SchoolApplication.dll

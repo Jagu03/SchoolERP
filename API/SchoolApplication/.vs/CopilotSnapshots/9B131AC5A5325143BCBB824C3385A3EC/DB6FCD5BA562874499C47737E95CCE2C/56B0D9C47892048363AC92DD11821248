@@ -1,0 +1,15 @@
+﻿using SchoolDomain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SchoolApplication.Interface
+{
+    public interface  ISubjectMasterRepository
+    {
+        Task<string> MergeSubjectMasterAsync(SchoolDomain.Entities.SubjectMaster subjectMaster);
+        Task<(IEnumerable<SubjectMaster> subjects, IEnumerable<SchoolInfo> SchoolDetails)> FetchSubjectMasterAsync();
+    }
+}

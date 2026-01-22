@@ -1,0 +1,86 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SchoolAPI.DTOs;
+using SchoolApplication.Interface;
+using SchoolDomain.Entities;
+
+namespace SchoolAPI.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ClassMasterController : ControllerBase
+    {
+        private readonly IClassMasterRepository _classMasterRepository;
+        private readonly ILogger<ClassMasterController> _logger;
+
+        public ClassMasterController(IClassMasterRepository classMasterRepository, ILogger<ClassMasterController> logger)
+        {
+            _classMasterRepository = classMasterRepository;
+            _logger = logger;
+        }
+
+        [HttpPost("MergeClassMaster")]
+        [AllowAnonymous]
+        public async Task<IActionResult> MergeClassMaster([FromBody] ClassMaster classMaster)
+        {
+            // ModelState validation is automatic with [ApiController]
+            if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("Invalid model state for MergeClassMaster");
+                return BadRequest(new ApiResponseDto<string>
+                {
+                    StatusCode = 400,
+                    Message = "Model validation failed.",
+                    Data = string.Join("; ", ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)))
+                });
+            }
+
+            try
+            {
+                var result = await _classMasterRepository.MergeClassMasterAsync(classMaster);
+
+                _logger.LogInformation("Class merged successfully. ClassID: {ClassId}", classMaster.ClsId);
+
+                return Ok(new ApiResponseDto<string>
+                {
+                    StatusCode = 200,
+                    Message = "Success",
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error merging ClassMaster (ClassID={ClassId})", classMaster?.ClsId);
+                throw;
+            }
+        }
+
+        [HttpGet("Fetch")]
+        [AllowAnonymous]
+        public async Task<IActionResult> FetchClassMaster()
+        {
+            try
+            {
+                var data = await _classMasterRepository.FetchClassMasterAsync();
+
+                _logger.LogInformation("Fetched {ClassCount} classes", data.classes.Count());
+
+                return Ok(new ApiResponseDto<object>
+                {
+                    StatusCode = 200,
+                    Message = "Success",
+                    Data = new
+                    {
+                        ClassMaster = data.classes,
+                        SchoolInfo = data.School
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching ClassMaster");
+                throw; // Let GlobalExceptionMiddleware handle it
+            }
+        }
+    }
+}

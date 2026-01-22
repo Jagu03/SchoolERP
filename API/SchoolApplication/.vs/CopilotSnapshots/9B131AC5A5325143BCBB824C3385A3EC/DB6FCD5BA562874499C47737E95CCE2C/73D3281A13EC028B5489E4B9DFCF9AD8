@@ -1,0 +1,66 @@
+﻿using Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using SchoolApplication.Interface;
+using SchoolDomain.Entities;
+using System.Data;
+
+namespace SchoolInfrastructure.Repositories
+{
+    public class SectionMasterRepository : ISectionMasterRepository
+    {
+        private readonly string _connectionString;
+        private readonly ILogger<SectionMasterRepository> _logger;
+
+        public SectionMasterRepository(IConfiguration configuration, ILogger<SectionMasterRepository> logger)
+        {
+            _connectionString = configuration.GetConnectionString("LiveDBContext") ?? string.Empty;
+            _logger = logger;
+
+            if (string.IsNullOrWhiteSpace(_connectionString))
+            {
+                throw new InvalidOperationException("Connection string 'LiveDBContext' is not configured. Configure it in appsettings.json or an environment variable.");
+            }
+        }
+
+        public async Task<string> MergeSectionMasterAsync(SectionMaster sectionMaster)
+        {
+            await using var connection = new SqlConnection(_connectionString);
+            var parameters = new DynamicParameters();
+            parameters.Add("@EditId", sectionMaster.SecId);
+            parameters.Add("@SectionName", sectionMaster.txt);
+            parameters.Add("@IsActive", sectionMaster.isc);
+            parameters.Add("@CreatedUserId", sectionMaster.cuid);
+            parameters.Add("@LoginId", sectionMaster.Logid);
+            parameters.Add("@result", dbType: DbType.String, size: 350, direction: ParameterDirection.Output);
+
+            await connection.ExecuteAsync("SchoolAcad.MergeSectionMaster",
+                parameters, commandType: CommandType.StoredProcedure);
+
+            return parameters.Get<string>("@result") ?? string.Empty;
+        }
+
+        public async Task<(IEnumerable<SectionMaster> sections, IEnumerable<SchoolInfo> SchoolDetails)> FetchSectionMasterAsync()
+        {
+            try
+            {
+                await using var connection = new SqlConnection(_connectionString);
+                await using var multi = await connection.QueryMultipleAsync(
+                    "[SchoolAcad].[FetchSectionMaster]", commandType: CommandType.StoredProcedure);
+                var sections = (await multi.ReadAsync<SectionMaster>()).ToList();
+                IEnumerable<SchoolInfo> school = Enumerable.Empty<SchoolInfo>();
+                if (!multi.IsConsumed)
+                {
+                    school = (await multi.ReadAsync<SchoolInfo>()).ToList();
+                }
+                return (sections, school);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching SectionMaster records");
+                throw;
+            }
+        }
+    }
+}

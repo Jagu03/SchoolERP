@@ -1,0 +1,94 @@
+﻿using Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using SchoolApplication.Interface;
+using SchoolDomain.Entities;
+using System.Data;
+
+namespace SchoolInfrastructure.Repositories
+{
+    public class SubjectMasterRepository : ISubjectMasterRepository
+    {
+        private readonly string _connectionString;
+        private readonly ILogger<SubjectMasterRepository> _logger;  
+        
+        public SubjectMasterRepository(IConfiguration configuration, ILogger<SubjectMasterRepository> logger)
+        {
+            _connectionString = configuration.GetConnectionString("LiveDBContext") ?? string.Empty; 
+            _logger = logger;
+
+            if (string.IsNullOrWhiteSpace(_connectionString))
+            {
+                throw new InvalidOperationException("Connection string 'LiveDBContext' is not configured. Configure it in appsettings.json or an environment variable.");
+            }
+        }
+
+        public async Task<string> MergeSubjectMasterAsync(SubjectMaster subjectMaster)
+        {
+            try
+            {
+                await using var connection = new SqlConnection(_connectionString);
+                var parameters = new DynamicParameters();
+                parameters.Add("@EditId", subjectMaster.SubjectId);
+                parameters.Add("@SubjectName", subjectMaster.SubjectName);
+                parameters.Add("@SubjectCode", subjectMaster.SubjectCode);
+                parameters.Add("@ShortName", subjectMaster.ShortName);
+                parameters.Add("@IsChoice", subjectMaster.IsChoice);
+                parameters.Add("@SubjTypeId", subjectMaster.SubjectTypeId);
+                parameters.Add("@Remarks", subjectMaster.Remarks);
+                parameters.Add("@CreatedUserId", subjectMaster.CreatedUserId);
+                parameters.Add("@LoginId", subjectMaster.LoginId);
+                parameters.Add("@result", dbType: DbType.String, size: 350, direction: ParameterDirection.Output);
+
+                await connection.ExecuteAsync("SchoolAcad.MergeSubjectMaster",
+                    parameters, commandType: CommandType.StoredProcedure);
+
+                var result = parameters.Get<string>("@result") ?? string.Empty;
+                _logger.LogInformation("Subject master merged successfully. SubjectID: {SubjectId}", subjectMaster.SubjectId);
+                return result;
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Database error while merging SubjectMaster (SubjectID={SubjectId})", subjectMaster?.SubjectId);
+                throw new InvalidOperationException("An error occurred while processing the subject master record.", ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error while merging SubjectMaster (SubjectID={SubjectId})", subjectMaster?.SubjectId);
+                throw;
+            }
+        }
+
+        public async Task<(IEnumerable<SubjectMaster> subjects, IEnumerable<SchoolInfo> SchoolDetails)> FetchSubjectMasterAsync()
+        {
+            try
+            {
+                await using var connection = new SqlConnection(_connectionString);
+                await using var multi = await connection.QueryMultipleAsync(
+                    "[SchoolAcad].[FetchSubjectMaster]", commandType: CommandType.StoredProcedure);
+
+                var subjects = (await multi.ReadAsync<SubjectMaster>()).ToList();
+
+                IEnumerable<SchoolInfo> schoolDetails = Enumerable.Empty<SchoolInfo>();
+                if (!multi.IsConsumed)
+                {
+                    schoolDetails = (await multi.ReadAsync<SchoolInfo>()).ToList();
+                }
+
+                _logger.LogInformation("Fetched {SubjectCount} subjects successfully", subjects.Count);
+                return (subjects, schoolDetails);
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Database error while fetching SubjectMaster");
+                throw new InvalidOperationException("An error occurred while fetching subject master records.", ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error while fetching SubjectMaster");
+                throw;
+            }
+        }
+    }
+}

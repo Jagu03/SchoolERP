@@ -1,0 +1,129 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SchoolAPI.DTOs;
+using SchoolApplication.Interface;
+using SchoolDomain.Entities;
+
+namespace SchoolAPI.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    [Authorize]
+    public class SectionMasterController : ControllerBase
+    {
+        private readonly ISectionMasterRepository _sectionMasterRepository;
+        private readonly ILogger<SectionMasterController> _logger;
+
+        public SectionMasterController(ISectionMasterRepository sectionMasterRepository, ILogger<SectionMasterController> logger)
+        {
+            _sectionMasterRepository = sectionMasterRepository;
+            _logger = logger;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MergeSectionMaster([FromBody] SectionMaster sectionMaster)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = string.Join("; ", ModelState.Values
+                    .SelectMany(v => v.Errors.Select(e => e.ErrorMessage)));
+                
+                _logger.LogWarning("Invalid model state for MergeSectionMaster. Errors: {Errors}", errors);
+                
+                return BadRequest(new ApiResponseDto<string>
+                {
+                    StatusCode = 400,
+                    Message = "Model validation failed.",
+                    Data = errors
+                });
+            }
+
+            try
+            {
+                var result = await _sectionMasterRepository.MergeSectionMasterAsync(sectionMaster);
+
+                _logger.LogInformation("Section merged successfully. SectionID: {SectionId}", sectionMaster.SectionId);
+
+                return Ok(new ApiResponseDto<string>
+                {
+                    StatusCode = 200,
+                    Message = "Section master record processed successfully.",
+                    Data = result
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "Error merging SectionMaster (SectionID={SectionId})", sectionMaster?.SectionId);
+                return StatusCode(500, new ApiResponseDto<string>
+                {
+                    StatusCode = 500,
+                    Message = "An error occurred while processing your request.",
+                    Data = null
+                });
+            }
+            catch (ArgumentNullException ex)
+            {
+                _logger.LogError(ex, "Null argument error in MergeSectionMaster");
+                return BadRequest(new ApiResponseDto<string>
+                {
+                    StatusCode = 400,
+                    Message = "Invalid request data.",
+                    Data = null
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error merging SectionMaster (SectionID={SectionId})", sectionMaster?.SectionId);
+                return StatusCode(500, new ApiResponseDto<string>
+                {
+                    StatusCode = 500,
+                    Message = "An unexpected error occurred.",
+                    Data = null
+                });
+            }
+        }
+
+        [HttpGet("Fetch")]
+        [AllowAnonymous]
+        public async Task<IActionResult> FetchSectionMaster()
+        {
+            try
+            {
+                var data = await _sectionMasterRepository.FetchSectionMasterAsync();
+
+                _logger.LogInformation("Fetched {SectionCount} sections", data.sections.Count());
+
+                return Ok(new ApiResponseDto<object>
+                {
+                    StatusCode = 200,
+                    Message = "Success",
+                    Data = new
+                    {
+                        SectionMaster = data.sections,
+                        SchoolDetails = data.SchoolDetails
+                    }
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "Error fetching SectionMaster");
+                return StatusCode(500, new ApiResponseDto<string>
+                {
+                    StatusCode = 500,
+                    Message = "An error occurred while retrieving section master records.",
+                    Data = null
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error fetching SectionMaster");
+                return StatusCode(500, new ApiResponseDto<string>
+                {
+                    StatusCode = 500,
+                    Message = "An unexpected error occurred.",
+                    Data = null
+                });
+            }
+        }
+    }
+}

@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SchoolDomain.Entities
+{
+    public class ClassMaster
+    {
+        public int ClsId { get; set; }
+
+        [Required(ErrorMessage = "Class name is required.")]
+        [StringLength(100, MinimumLength = 1, ErrorMessage = "Class name must be between 1 and 100 characters.")]
+        public string txt { get; set; } = string.Empty;
+        public int dpyor { get; set; }
+
+        [Range(0, 1, ErrorMessage = "IsActive must be 0 or 1.")]
+        public byte isc { get; set; }
+
+        [StringLength(500, ErrorMessage = "Remarks cannot exceed 500 characters.")]
+        public string rmk { get; set; } = string.Empty;
+        public short cuid { get; set; }
+        public long Logid { get; set; }
+    }
+    public class SchoolInfo
+    {
+        public int spid { get; set; }
+        public string spn { get; set; } = string.Empty;
+        public string ayn { get; set; } = string.Empty;
+        public string ifn { get; set; } = string.Empty;
+        public string isn { get; set; } = string.Empty;
+        public string lc { get; set; } = string.Empty;
+    }
+}
