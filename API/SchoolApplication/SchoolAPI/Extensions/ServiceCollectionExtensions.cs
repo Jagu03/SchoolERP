@@ -1,5 +1,7 @@
 ﻿using SchoolApplication.Interface;
+using SchoolApplication.Interface.YearlyEvents;
 using SchoolInfrastructure.Repositories;
+using SchoolInfrastructure.Repositories.YearlyEvents;
 
 namespace SchoolAPI.Extensions
 {
@@ -13,6 +15,8 @@ namespace SchoolAPI.Extensions
             services.AddScoped<IClassSectionAllocationRepository, ClassSectionAllocationRepository>();
             services.AddScoped<ISubjectMasterRepository, SubjectMasterRepository>();
             services.AddScoped<IClassSectionSubjectMapRepository, ClassSectionSubjectMapRepository>();
+            services.AddScoped<ISyllabusFinalizationRepository, SyllabusFinalizationRepository>();
+            services.AddScoped<IStaffSubjectAllocationRepository, StaffSubjectAllocationRepository>();
             return services;
         }
     }
