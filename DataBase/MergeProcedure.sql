@@ -368,3 +368,497 @@ BEGIN
 	SET NOCOUNT OFF;
 END
 GO
+
+/*=========================================================================================================
+                                       MergeAssessmentPolicyMaster
+============================================================================================================*/
+IF OBJECT_ID(N'SchoolAcad.MergeAssessmentPolicyMaster', N'P') IS NULL
+BEGIN
+	EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.MergeAssessmentPolicyMaster AS SELECT 1'
+END
+GO
+
+ALTER PROCEDURE SchoolAcad.MergeAssessmentPolicyMaster
+(
+	@EditId        INT = 0
+	, @ClassId       INT
+	, @SubjectId     INT
+	, @AcadYearId    SMALLINT
+	, @IsActive      TINYINT
+	, @Remarks       NVARCHAR(1000)
+	, @CreatedUserId SMALLINT
+	, @LoginId       BIGINT
+	, @Result        NVARCHAR(300) OUTPUT
+)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	IF @EditId = 0
+	BEGIN
+		IF EXISTS (	SELECT 1 FROM SchoolAcad.AssessmentPolicyMaster
+			WHERE ClassId=@ClassId AND SubjectId=@SubjectId AND AcadYearId=@AcadYearId )
+		BEGIN
+			SET @Result = 'Assessment policy already exists.'
+		END
+		ELSE
+		BEGIN
+			INSERT INTO SchoolAcad.AssessmentPolicyMaster (ClassId, SubjectId, AcadYearId, IsActive, Remarks, CreatedUserId, LoginId)
+			VALUES(@ClassId, @SubjectId, @AcadYearId, @IsActive, @Remarks, @CreatedUserId, @LoginId)
+
+			SET @Result = 'Assessment policy saved successfully.'
+		END
+	END
+	ELSE
+	BEGIN
+		UPDATE SchoolAcad.AssessmentPolicyMaster
+		SET
+		    ClassId = @ClassId,
+			SubjectId = @SubjectId,
+			AcadYearId = @AcadYearId,
+		    IsActive = @IsActive,
+			Remarks = @Remarks,
+			LoginId = @LoginId
+		WHERE PolicyId = @EditId
+
+		SET @Result = 'Assessment policy updated successfully.'
+	END
+END
+GO
+
+/*=========================================================================================================
+                                       SaveAssessmentPolicyComponent
+============================================================================================================*/
+IF OBJECT_ID(N'SchoolAcad.SaveAssessmentPolicyComponent', N'P') IS NULL
+BEGIN
+	EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.SaveAssessmentPolicyComponent AS SELECT 1'
+END
+GO
+
+ALTER PROCEDURE SchoolAcad.SaveAssessmentPolicyComponent
+(
+	  @EditId        INT = 0          -- ComponentId
+	, @PolicyId      INT
+	, @ComponentName NVARCHAR(50)
+	, @MaxMarks      INT
+	, @Weightage     DECIMAL(5,2)
+	, @IsMandatory   TINYINT
+	, @DisplayOrder  INT
+	, @Remarks       NVARCHAR(1000)
+	, @CreatedUserId SMALLINT
+	, @LoginId       BIGINT
+	, @Result        NVARCHAR(300) OUTPUT
+)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	IF @EditId = 0
+	BEGIN
+		IF EXISTS(SELECT 1 FROM SchoolAcad.AssessmentPolicyComponent
+			WHERE PolicyId = @PolicyId  AND ComponentName = @ComponentName)
+		BEGIN
+			SET @Result = 'Component already exists for this policy.'
+			RETURN
+		END
+
+		INSERT INTO SchoolAcad.AssessmentPolicyComponent
+		(PolicyId, ComponentName, MaxMarks, Weightage,IsMandatory, DisplayOrder, Remarks,CreatedUserId, LoginId)
+		VALUES(@PolicyId, @ComponentName, @MaxMarks, @Weightage,@IsMandatory, @DisplayOrder, @Remarks,@CreatedUserId, @LoginId)
+
+		SET @Result = 'Component added successfully.'
+	END
+	ELSE
+	BEGIN
+		-- UPDATE
+		UPDATE SchoolAcad.AssessmentPolicyComponent
+		SET
+			ComponentName = @ComponentName,
+			MaxMarks      = @MaxMarks,
+			Weightage     = @Weightage,
+			IsMandatory   = @IsMandatory,
+			DisplayOrder  = @DisplayOrder,
+			Remarks       = @Remarks,
+			LoginId       = @LoginId
+		WHERE ComponentId = @EditId
+
+		SET @Result = 'Component updated successfully.'
+	END
+
+	SET NOCOUNT OFF;
+END
+GO
+
+/*=========================================================================================================
+                                       MergeTeacherSubjectAllocation
+============================================================================================================*/
+IF OBJECT_ID(N'SchoolAcad.MergeTeacherSubjectAllocation', N'P') IS NULL
+BEGIN
+	EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.MergeTeacherSubjectAllocation AS SELECT 1'
+END
+GO
+
+ALTER PROCEDURE SchoolAcad.MergeTeacherSubjectAllocation
+(
+	  @EditId        INT = 0
+	, @StaffId       INT
+	, @ClassId       INT
+	, @SectionId     INT
+	, @SubjectId     INT
+	, @AcadYearId    TINYINT
+	, @IsActive      TINYINT
+	, @Remarks       NVARCHAR(1000)
+	, @CreatedUserId SMALLINT
+	, @LoginId       BIGINT
+	, @Result        NVARCHAR(300) OUTPUT
+
+)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	IF @EditId = 0
+	BEGIN
+		IF EXISTS (	SELECT 1 FROM SchoolAcad.StaffSubjectAllocation	WHERE StaffId  = @StaffId
+			  AND ClassId  = @ClassId  AND SectionId  = @SectionId
+			  AND SubjectId = @SubjectId  AND AcadYearId = @AcadYearId	)
+		BEGIN
+			SET @Result = 'Staff already allocated for this subject.'
+			RETURN
+		END
+
+		INSERT INTO SchoolAcad.StaffSubjectAllocation	(StaffId, ClassId, SectionId, SubjectId,
+			AcadYearId, IsActive, Remarks,CreatedUserId, LoginId)
+		VALUES(	@StaffId, @ClassId, @SectionId, @SubjectId,@AcadYearId, @IsActive, @Remarks,
+			@CreatedUserId, @LoginId)
+
+		SET @Result = 'Staff allocated successfully.'
+	END
+	ELSE
+	BEGIN
+
+		UPDATE SchoolAcad.StaffSubjectAllocation
+		SET
+			StaffId    = @StaffId,
+			ClassId    = @ClassId,
+			SectionId  = @SectionId,
+			SubjectId  = @SubjectId,
+			IsActive   = @IsActive,
+			Remarks    = @Remarks,
+			LoginId    = @LoginId
+		WHERE AllocationId = @EditId
+
+		SET @Result = 'Staff allocation updated successfully.'
+	END
+
+	SET NOCOUNT OFF;
+END
+GO
+
+/*=========================================================================================================
+                                       MergeLessonPlan
+============================================================================================================*/
+IF OBJECT_ID(N'SchoolAcad.MergeLessonPlan', N'P') IS NULL
+BEGIN
+	EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.MergeLessonPlan AS SELECT 1'
+END
+GO
+
+ALTER PROCEDURE SchoolAcad.MergeLessonPlan
+(
+	  @EditId           INT = 0
+	, @ClassId          INT
+	, @SectionId        INT
+	, @SubjectId        INT
+	, @StaffId          INT
+	, @AcadYearId       TINYINT
+	, @TopicTitle       NVARCHAR(200)
+	, @TopicDescription NVARCHAR(2000)
+	, @PlannedFromDate  DATE
+	, @PlannedToDate    DATE
+	, @Unit             TINYINT
+	, @TeachingMethod   NVARCHAR(100)
+	, @StudentLearningMethod NVARCHAR(100)
+	, @Status           NVARCHAR(20)
+	, @IsActive         TINYINT
+	, @Remarks          NVARCHAR(1000)
+	, @CreatedUserId    SMALLINT
+	, @LoginId          BIGINT
+	, @Result           NVARCHAR(300) OUTPUT
+)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	-- INSERT
+	IF @EditId = 0
+	BEGIN
+		INSERT INTO SchoolAcad.LessonPlan(ClassId, SectionId, SubjectId, StaffId, AcadYearId,
+			TopicTitle, TopicDescription,PlannedFromDate, PlannedToDate, Unit , TeachingMethod,
+			StudentLearningMethod, StatusText, IsActive, Remarks,CreatedUserId, LoginId)
+		VALUES(	@ClassId, @SectionId, @SubjectId, @StaffId, @AcadYearId,
+			@TopicTitle, @TopicDescription,@PlannedFromDate, @PlannedToDate,@Unit , @TeachingMethod,
+			@StudentLearningMethod,@Status, @IsActive, @Remarks,@CreatedUserId, @LoginId)
+
+		SET @Result = 'Lesson plan saved successfully.'
+	END
+	ELSE
+	BEGIN
+		-- UPDATE
+		UPDATE SchoolAcad.LessonPlan
+		SET
+			ClassId          = @ClassId,
+			SectionId        = @SectionId,
+			SubjectId        = @SubjectId,
+			StaffId          =  @StaffId,
+			TopicTitle       = @TopicTitle,
+			TopicDescription = @TopicDescription,
+			PlannedFromDate  = @PlannedFromDate,
+			PlannedToDate    = @PlannedToDate,
+			Unit             = @Unit,
+			TeachingMethod   = @TeachingMethod,
+			StudentLearningMethod = @StudentLearningMethod,
+			StatusText       = @Status,
+			IsActive         = @IsActive,
+			Remarks          = @Remarks,
+			LoginId          = @LoginId
+		WHERE LessonPlanId = @EditId
+
+		SET @Result = 'Lesson plan updated successfully.'
+	END
+
+	SET NOCOUNT OFF;
+END
+GO
+
+/*=========================================================================================================
+                                       MergeClassroomTeaching
+============================================================================================================*/
+IF OBJECT_ID(N'SchoolAcad.MergeClassroomTeaching', N'P') IS NULL
+BEGIN
+    EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.MergeClassroomTeaching AS SELECT 1'
+END
+GO
+
+ALTER PROCEDURE SchoolAcad.MergeClassroomTeaching
+(
+      @EditId        INT = 0
+    , @AcadYearId    SMALLINT
+    , @ClassId       INT
+    , @SectionId     INT
+    , @SubjectId     INT
+    , @StaffId       INT
+    , @TeachingDate DATE
+    , @PeriodNo      TINYINT
+    , @UnitNo        TINYINT
+    , @TopicTitle    NVARCHAR(200)
+    , @TopicDescription NVARCHAR(2000)
+    , @TeachingMethod NVARCHAR(200)
+    , @StudentLearningMethod NVARCHAR(200)
+    , @IsCompleted   TINYINT
+    , @Remarks       NVARCHAR(1000)
+    , @UserId        SMALLINT
+    , @LoginId       BIGINT
+    , @Result        NVARCHAR(300) OUTPUT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @EditId = 0
+    BEGIN
+        INSERT INTO SchoolAcad.ClassroomTeaching (AcadYearId, ClassId, SectionId, SubjectId, StaffId,
+            TeachingDate, PeriodNo, UnitNo, TopicTitle, TopicDescription,
+            TeachingMethod, StudentLearningMethod, IsCompleted, Remarks, CreatedUserId, LoginId )
+        VALUES ( @AcadYearId, @ClassId, @SectionId, @SubjectId, @StaffId,
+            @TeachingDate, @PeriodNo, @UnitNo, @TopicTitle, @TopicDescription,
+            @TeachingMethod, @StudentLearningMethod, @IsCompleted, @Remarks, @UserId, @LoginId )
+
+        SET @Result = 'Classroom teaching saved successfully.'
+    END
+    ELSE
+    BEGIN
+        UPDATE SchoolAcad.ClassroomTeaching
+        SET
+            TeachingDate = @TeachingDate,
+            PeriodNo = @PeriodNo,
+            UnitNo = @UnitNo,
+            TopicTitle = @TopicTitle,
+            TopicDescription = @TopicDescription,
+            TeachingMethod = @TeachingMethod,
+            StudentLearningMethod = @StudentLearningMethod,
+            IsCompleted = @IsCompleted,
+            Remarks = @Remarks,
+            ModifiedUserId = @UserId,
+            ModifiedDateTime = GETDATE(),
+            LoginId = @LoginId
+        WHERE ClassroomTeachingId = @EditId
+
+        SET @Result = 'Classroom teaching updated successfully.'
+    END
+
+    SET NOCOUNT OFF;
+END
+GO
+
+/*=========================================================================================================
+                                       MergeAssignment
+============================================================================================================*/
+IF OBJECT_ID(N'SchoolAcad.MergeAssignment', N'P') IS NULL
+BEGIN
+    EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.MergeAssignment AS SELECT 1'
+END
+GO
+
+ALTER PROCEDURE SchoolAcad.MergeAssignment
+(
+   @EditId			  INT = 0,
+    @AcadYearId		  SMALLINT,
+    @ClassId		  INT,
+    @SectionId		  INT,
+    @SubjectId		  INT,
+    @StaffId		  INT,
+    @AssignmentType   NVARCHAR(20),
+    @Title			  NVARCHAR(200),
+    @TitleDescription NVARCHAR(500),
+    @GivenDate		  DATE,
+    @DueDate		  DATE,
+    @MaxMarks		  INT,
+	@Remarks          NVARCHAR(20),
+    @CreatedUserId	  SMALLINT,
+    @LoginId		  BIGINT,
+	@Result			  NVARCHAR(350) = '' OUTPUT
+)
+WITH ENCRYPTION
+AS
+BEGIN
+SET NOCOUNT ON
+      IF @EditId = 0
+	BEGIN
+		INSERT INTO SchoolAcad.AssignmentMaster (AcadYearId, ClassId, SectionId, SubjectId, StaffId,
+			AssignmentType, Title, TitleDescription,GivenDate, DueDate, MaxMarks,Remarks,CreatedUserId, LoginId)
+		VALUES(@AcadYearId, @ClassId, @SectionId, @SubjectId, @StaffId,@AssignmentType, @Title, @TitleDescription,
+			@GivenDate, @DueDate, @MaxMarks,@Remarks,@CreatedUserId, @LoginId)
+		SET @Result = 'Assignment Save Successfully.'
+	END
+	ELSE
+	BEGIN
+	    UPDATE SchoolAcad.AssignmentMaster SET 
+				AcadYearId = @AcadYearId,
+				ClassId = @ClassId,
+				SectionId = @SectionId,
+				SubjectId = @SubjectId,
+				StaffId = @StaffId,
+				AssignmentType = @AssignmentType,
+				Title = @Title,
+				TitleDescription = @TitleDescription,
+				GivenDate = @GivenDate,
+				DueDate = @DueDate,
+				MaxMarks = @MaxMarks,
+				Remarks = @Remarks,
+				CreatedUserId = @CreatedUserId,
+				LoginId = @LoginId 
+				WHERE AssignmentId = @EditId
+	SET @Result = 'Assignment Updated Successfully.'
+	END
+END
+GO
+
+/*=========================================================================================================
+                                       MergeAssignmentStudentMark
+============================================================================================================*/
+IF OBJECT_ID(N'SchoolAcad.MergeAssignmentStudentMark', N'P') IS NULL
+BEGIN
+    EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.MergeAssignmentStudentMark AS SELECT 1'
+END
+GO
+
+ALTER PROCEDURE SchoolAcad.MergeAssignmentStudentMark
+(
+    @EditId           INT = 0,
+    @AssignmentId     INT,
+    @StudentId        INT,
+    @SubmissionStatus NVARCHAR(20),
+    @ObtainedMarks    INT,
+    @SubmissionDate   DATE,
+    @Remarks          NVARCHAR(500),
+    @CreatedUserId    SMALLINT,
+	@LoginId		  BIGINT,
+	@Result			  NVARCHAR(350) = '' OUTPUT
+)
+AS
+BEGIN
+SET NOCOUNT ON 
+   IF @EditId = 0
+   BEGIN
+		INSERT INTO SchoolAcad.AssignmentStudentMark (AssignmentId, StudentId,
+			SubmissionStatus, ObtainedMarks,SubmissionDate, Remarks, CreatedUserId,LoginId)
+		VALUES(@AssignmentId, @StudentId,@SubmissionStatus, @ObtainedMarks,
+			@SubmissionDate, @Remarks,@CreatedUserId,@LoginId)
+	SET @Result = 'StudentMark Save Successfully.'
+  END
+  ELSE
+  BEGIN
+      UPDATE SchoolAcad.AssignmentStudentMark SET
+			  AssignmentId = @AssignmentId,
+			  StudentId = @StudentId,
+			  SubmissionStatus = @SubmissionStatus,
+			  Remarks = @Remarks,
+			  LoginId = @LoginId
+			  WHERE MarkId = @EditId
+  SET @Result = 'StudentMark Update Successfully.'
+  END
+SET NOCOUNT OFF
+END
+GO
+
+/*=========================================================================================================
+                                       MergeStudentElectiveSubject
+============================================================================================================*/
+IF OBJECT_ID(N'SchoolAcad.MergeStudentElectiveSubject', N'P') IS NULL
+BEGIN
+    EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.MergeStudentElectiveSubject AS SELECT 1'
+END
+GO
+
+ALTER PROCEDURE SchoolAcad.MergeStudentElectiveSubject
+(
+    @EditId INT = 0,
+    @StudentId INT,
+    @ClassId INT,
+    @AcadYearId SMALLINT,
+    @SubjectId INT,
+    @CreatedUserId SMALLINT,
+    @LoginId BIGINT,
+    @Result NVARCHAR(200) OUTPUT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @EditId = 0
+    BEGIN
+        INSERT INTO SchoolAcad.StudentElectiveSubject (StudentId, ClassId, AcadYearId, SubjectId,
+            CreatedUserId, LoginId)
+        VALUES (@StudentId, @ClassId, @AcadYearId, @SubjectId,
+            @CreatedUserId, @LoginId);
+
+        SET @Result = 'Elective subject assigned successfully.';
+    END
+    ELSE
+    BEGIN
+        UPDATE SchoolAcad.StudentElectiveSubject
+        SET
+		    StudentId = @StudentId,
+			ClassId = @ClassId,
+			AcadYearId = @AcadYearId,
+            SubjectId = @SubjectId,
+            LoginId = @LoginId
+        WHERE StudentElectiveId = @EditId;
+
+        SET @Result = 'Elective subject updated successfully.';
+    END
+
+    SET NOCOUNT OFF;
+END
+GO
