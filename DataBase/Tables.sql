@@ -1,16 +1,19 @@
 IF OBJECT_ID(N'[SchoolAcad].[ClassMaster]',N'U') IS NULL 
 BEGIN 
+    -- CREATE SCHEMA SchoolAcad
     -- SELECT * FROM SchoolAcad.ClassMaster
 	-- DROP TABLE SchoolAcad.ClassMaster
 	CREATE TABLE SchoolAcad.ClassMaster
 	(
 	 ClassId            INT		        NOT NULL	IDENTITY(1,1)
-	  ,ClassName        NVARCHAR(50)    NOT NULL
+	  ,ClassName        NVARCHAR(100)   NOT NULL
 	  ,DisplayOrder     INT             NOT NULL
-      ,IsActive         TINYINT         NOT NULL    DEFAULT 1   
+      ,IsActive         BIT             NOT NULL    DEFAULT 1   
 	  ,Remarks			NVARCHAR(1000)	NULL
 	  ,CreatedUserId	SMALLINT		NOT NULL
 	  ,CreatedDateTime	DATETIME		NOT NULL	DEFAULT GETDATE()
+	  ,ModifiedUserId   SMALLINT        NULL
+      ,ModifiedDateTime DATETIME        NULL
 	  ,LoginId			BIGINT			NOT NULL
 	  ,CONSTRAINT  PK__ClassMaster__ClassId       PRIMARY KEY (ClassId)
 	  ,CONSTRAINT  UK__ClassMaster__ClassName     UNIQUE NONCLUSTERED (ClassName)
@@ -27,7 +30,7 @@ BEGIN
 	(
 	 SectionId          INT		        NOT NULL	IDENTITY(1,1)
 	  ,SectionName      NVARCHAR(50)    NOT NULL
-      ,IsActive         TINYINT         NOT NULL    DEFAULT 1   
+      ,IsActive         BIT             NOT NULL    DEFAULT 1   
 	  ,CreatedUserId	SMALLINT		NOT NULL
 	  ,CreatedDateTime	DATETIME		NOT NULL	DEFAULT GETDATE()
 	  ,LoginId			BIGINT			NOT NULL
@@ -48,7 +51,7 @@ BEGIN
 		,ClassId           INT            NOT NULL
 		,SectionId         INT            NOT NULL
 		,AcadYearId        TINYINT        NOT NULL
-		,IsActive          TINYINT        NOT NULL DEFAULT 1
+		,IsActive          BIT            NOT NULL DEFAULT 1
 		,Remarks           NVARCHAR(1000) NULL
 		,CreatedUserId     SMALLINT       NOT NULL
 		,CreatedDateTime   DATETIME       NOT NULL DEFAULT GETDATE()
@@ -73,7 +76,7 @@ BEGIN
 	  ,SubjectName      NVARCHAR(50)    NOT NULL
 	  ,SubjectCode      NVARCHAR(50)    NULL
 	  ,ShortName        NVARCHAR(50)    NULL
-	  ,IsChoice         TINYINT         NULL        DEFAULT 0
+	  ,IsChoice         BIT             NULL        DEFAULT 0
       ,SubjTypeId       SMALLINT        NOT NULL   
 	  ,Remarks          NVARCHAR(100)   NULL
 	  ,CreatedUserId	SMALLINT		NOT NULL
@@ -98,7 +101,7 @@ BEGIN
 	  ,SectionId        INT             NOT NULL
 	  ,SubjectId        INT             NOT NULL
 	  ,AcadYearId       TINYINT         NOT NULL
-	  ,IsActive         TINYINT         NOT NULL    DEFAULT 1
+	  ,IsActive         BIT             NOT NULL    DEFAULT 1
    	  ,Remarks          NVARCHAR(1000)  NULL
 	  ,CreatedUserId	SMALLINT		NOT NULL
 	  ,CreatedDateTime	DATETIME		NOT NULL	DEFAULT GETDATE()
@@ -125,7 +128,7 @@ BEGIN
 	  ,SectionId        INT             NOT NULL
 	  ,SubjectId        INT             NOT NULL
 	  ,AcadYearId       TINYINT         NOT NULL
-	  ,IsFinalized      TINYINT         NOT NULL DEFAULT 0
+	  ,IsFinalized      BIT             NOT NULL DEFAULT 0
 	  ,FinalizedDate    DATETIME        NULL
    	  ,Remarks          NVARCHAR(1000)  NULL
 	  ,CreatedUserId	SMALLINT		NOT NULL
@@ -151,7 +154,7 @@ BEGIN
 		ClassId         INT            NOT NULL,
 		SubjectId       INT            NOT NULL,
 		AcadYearId      TINYINT        NOT NULL,
-		IsActive        TINYINT        NOT NULL DEFAULT 1,
+		IsActive        BIT            NOT NULL DEFAULT 1,
 		Remarks         NVARCHAR(1000) NULL,
 		CreatedUserId   SMALLINT       NOT NULL,
 		CreatedDateTime DATETIME       NOT NULL DEFAULT GETDATE(),
@@ -177,7 +180,7 @@ BEGIN
 		ComponentName   NVARCHAR(50) NOT NULL, -- Internal / External / Project
 		MaxMarks        INT          NOT NULL,
 		Weightage       DECIMAL(5,2) NOT NULL,
-		IsMandatory     TINYINT      NOT NULL DEFAULT 1,
+		IsMandatory     BIT          NOT NULL DEFAULT 1,
 		DisplayOrder    INT          NOT NULL,
 		Remarks         NVARCHAR(1000) NULL,
 		CreatedUserId   SMALLINT       NOT NULL,
@@ -202,7 +205,7 @@ BEGIN
 		SectionId        INT			NOT NULL,
 		SubjectId        INT            NOT NULL,
 		AcadYearId       TINYINT        NOT NULL,
-		IsActive         TINYINT        NOT NULL DEFAULT 1,
+		IsActive         BIT            NOT NULL DEFAULT 1,
 		Remarks          NVARCHAR(1000) NULL,
 		CreatedUserId    SMALLINT       NOT NULL,
 		CreatedDateTime  DATETIME       NOT NULL DEFAULT GETDATE(),
@@ -240,7 +243,7 @@ BEGIN
 		TeachingMethod   NVARCHAR(100)  NOT NULL,
 		StudentLearningMethod NVARCHAR(100)   NOT NULL,
 		StatusText       NVARCHAR(20)   NOT NULL DEFAULT 'Planned', 	-- Planned / InProgress / Completed
-		IsActive         TINYINT        NOT NULL DEFAULT 1,
+		IsActive         BIT            NOT NULL DEFAULT 1,
 		Remarks          NVARCHAR(1000) NULL,
 		CreatedUserId    SMALLINT       NOT NULL,
 		CreatedDateTime  DATETIME		NOT NULL DEFAULT GETDATE(),
@@ -278,13 +281,12 @@ BEGIN
         StudentLearningMethod NVARCHAR(200) NOT NULL,
         IsCompleted			  TINYINT		NOT NULL DEFAULT 1,
         Remarks				  NVARCHAR(1000)NULL,
-        IsActive			  TINYINT		NOT NULL DEFAULT 1,
+        IsActive			  BIT		    NOT NULL DEFAULT 1,
         CreatedUserId		  SMALLINT		NOT NULL,
         CreatedDateTime		  DATETIME		NOT NULL DEFAULT GETDATE(),
         ModifiedUserId		  SMALLINT		NULL,
         ModifiedDateTime	  DATETIME		NULL,
         LoginId				  BIGINT		NOT NULL,
-
         CONSTRAINT PK_ClassroomTeaching PRIMARY KEY (ClassroomTeachingId),
 		CONSTRAINT UK_ClassroomTeaching__AcadYearId_ClassId_SubjectId_StaffId_UnitNo_PeriodNo_TopicTitle UNIQUE NONCLUSTERED (AcadYearId,ClassId,SubjectId,StaffId,UnitNo,PeriodNo,TopicTitle),
         CONSTRAINT FK_ClassroomTeaching_AcadYear FOREIGN KEY (AcadYearId) REFERENCES IBase.AcadYear(AcadYearId),
@@ -315,7 +317,7 @@ BEGIN
         GivenDate		DATE NOT NULL,
         DueDate			DATE NOT NULL,
         MaxMarks		INT NOT NULL,
-        IsActive		TINYINT NOT NULL DEFAULT 1,
+        IsActive		BIT NOT NULL DEFAULT 1,
         Remarks			NVARCHAR(1000) NULL,
         CreatedUserId	SMALLINT NOT NULL,
         CreatedDateTime DATETIME NOT NULL DEFAULT GETDATE(),
@@ -368,16 +370,45 @@ BEGIN
         ClassId           INT NOT NULL,
         AcadYearId        TINYINT NOT NULL,
         SubjectId         INT NOT NULL,   -- Hindi / French
-        IsActive          TINYINT NOT NULL DEFAULT 1,
+        IsActive          BIT NOT NULL DEFAULT 1,
         CreatedUserId     SMALLINT NOT NULL,
         CreatedDateTime   DATETIME NOT NULL DEFAULT GETDATE(),
         LoginId           BIGINT NOT NULL,
-        CONSTRAINT UK_StudentElectiveSubject_StudentId_AcadYearId UNIQUE NONCLUSTERED (StudentId, AcadYearId),
+        CONSTRAINT UK_StudentElectiveSubject_StudentId_AcadYearId_SubjectId UNIQUE NONCLUSTERED (StudentId, AcadYearId,SubjectId),
         CONSTRAINT FK_StudentElectiveSubject_Student FOREIGN KEY (StudentId) REFERENCES Academic.StudAdmnInfo(StudentId),
         CONSTRAINT FK_StudentElectiveSubject_Subject FOREIGN KEY (SubjectId) REFERENCES SchoolAcad.SubjectMaster(SubjectId),
         CONSTRAINT FK_StudentElectiveSubject_Class FOREIGN KEY (ClassId) REFERENCES SchoolAcad.ClassMaster(ClassId),
 		CONSTRAINT FK_StudentElectiveSubject_CreatedUserId FOREIGN KEY (CreatedUserId) REFERENCES HR.Users(UserId)
     )
+END
+GO
+
+IF OBJECT_ID(N'SchoolAcad.HourSetting',N'U') IS NULL
+BEGIN
+	-- DROP TABLE SchoolAcad.HourSetting
+	--	SELECT * FROM  SchoolAcad.HourSetting
+	CREATE TABLE SchoolAcad.HourSetting
+	(
+		HourSettingId		int				NOT NULL		IDENTITY(1,1)
+	--  , SessionSettingId	smallint		NOT NULL
+		, FromDt			datetime 	    NOT NULL
+		, ClassId			int		        NOT NULL
+		, HourId			tinyint			NOT NULL
+		, FromTime			nvarchar(10)	NULL
+		, ToTime			nvarchar(10)	NULL
+		, SessNameId		tinyint			NULL
+		, IsActive			BIT				NOT NULL
+		, IsCommon			BIT				NULL
+		, CreatedUserId		smallint		NOT NULL
+		, CreatedDateTime	datetime		NOT NULL	DEFAULT		GETDATE()
+		, CourseId			smallint		NOT NULL
+		, LoginId			bigint			NULL
+		, CONSTRAINT		pk__HourSetting__HourSettingId		PRIMARY KEY (HourSettingId)
+		, CONSTRAINT		uk__HourSetting__ClassId_HourId		UNIQUE NONCLUSTERED (HourId, ClassId)
+		, CONSTRAINT		fk__HourSetting__ClassId			FOREIGN KEY (ClassId)	REFERENCES	SchoolAcad.ClassMaster(ClassId)
+		, CONSTRAINT		fk__HourSetting__CreatedUserId		FOREIGN KEY (CreatedUserId)	REFERENCES	HR.Users(UserId)
+	)
+	ON IMain
 END
 GO
 
@@ -391,12 +422,14 @@ BEGIN
         AcadYearId       TINYINT      NOT NULL,
         ClassId          INT		  NOT NULL,
         SectionId        INT		  NOT NULL,
-        DayOfWeekId      TINYINT	  NOT NULL, -- 1=Mon,2=Tue...
+        --DayOfWeekId      TINYINT	  NULL, -- 1=Mon,2=Tue...
+		DayId            SMALLINT     NOT NULL,
+		HourId           INT          NOT NULL,
         PeriodNoId       TINYINT      NOT NULL, -- 1 to 8
         SubjectId        INT	      NOT NULL,
         StaffId          INT		  NOT NULL,
-		StaffSubjectId   INT		  NOT NULL,
-        IsActive         TINYINT      NOT NULL DEFAULT 1,
+		--StaffSubjectId   INT		  NOT NULL,
+        IsActive         BIT          NOT NULL DEFAULT 1,
         Remarks          NVARCHAR(500) NULL,
         CreatedUserId    SMALLINT     NOT NULL,
         CreatedDateTime  DATETIME     NOT NULL DEFAULT GETDATE(),
@@ -405,13 +438,124 @@ BEGIN
         LoginId          BIGINT       NOT NULL,       
 		CONSTRAINT PK_TimeTable_TimeTableId PRIMARY KEY (TimeTableId),
 		CONSTRAINT FK_TimeTable_ClassId FOREIGN KEY (ClassId) REFERENCES SchoolAcad.ClassMaster(ClassId),
-		CONSTRAINT UK_TimeTable__AcadYearId_ClassId_SubjectId_StaffId_DayOfWeekId_PeriodNoId_StaffSubjectId UNIQUE NONCLUSTERED (AcadYearId,ClassId,SubjectId,StaffId,DayOfWeekId,PeriodNoId,StaffSubjectId),
+		--CONSTRAINT UK_TimeTable__AcadYearId_ClassId_SubjectId_StaffId_DayOfWeekId_PeriodNoId_StaffSubjectId UNIQUE NONCLUSTERED (AcadYearId,ClassId,SubjectId,StaffId,DayOfWeekId,PeriodNoId,StaffSubjectId),
+		CONSTRAINT UK_TimeTable__AcadYearId_ClassId_SectionId_DayId_PeriodNoId UNIQUE NONCLUSTERED(AcadYearId,ClassId,SectionId,DayId,PeriodNoId),
 		CONSTRAINT FK_TimeTable_SectionId FOREIGN KEY (SectionId) REFERENCES SchoolAcad.SectionMaster(SectionId),
 		CONSTRAINT FK_TimeTable_SubjectId FOREIGN KEY (SubjectId) REFERENCES SchoolAcad.SubjectMaster(SubjectId),
 		CONSTRAINT FK_TimeTable_StaffId FOREIGN KEY (StaffId) REFERENCES Staff.Basicinfo(StaffId),
 		CONSTRAINT FK_TimeTable_AcadYearId FOREIGN KEY (AcadYearId) REFERENCES IBase.AcadYear(AcadYearId),
-		CONSTRAINT StaffSubjectId  FOREIGN KEY (StaffSubjectId) REFERENCES SchoolAcad.StaffSubjectAllocation (AllocationId),
+		--CONSTRAINT FK_StaffSubjectId  FOREIGN KEY (StaffSubjectId) REFERENCES SchoolAcad.StaffSubjectAllocation (AllocationId),
+		CONSTRAINT FK_SchoolAcad_TimeTable_DayId FOREIGN KEY (DayId)  REFERENCES Data.TimeTableDays(DayId),
+	    CONSTRAINT FK_SchoolAcad_TimeTable_HourId FOREIGN KEY (HourId)REFERENCES SchoolAcad.HourSetting(HourSettingId),
 		CONSTRAINT FK_TimeTable_CreatedUserId FOREIGN KEY (CreatedUserId) REFERENCES HR.Users(UserId)
     )
 END
 GO
+
+IF OBJECT_ID(N'[SchoolAcad].[SchoolAttendance]',N'U') IS NULL
+BEGIN
+
+	--	DROP TABLE [SchoolAcad].[SchoolAttendance]
+	--- SELECT * FROM [SchoolAcad].[SchoolAttendance]
+	CREATE TABLE [SchoolAcad].[SchoolAttendance]
+	(
+		AttendanceId	    BIGINT				NOT NULL		IDENTITY(1,1)
+		, StudentId			INT					NOT NULL
+		, ClassId			INT			        NOT NULL
+		, AttendanceDate    DATE 				NOT NULL
+		, FNAtten			TINYINT				NULL
+		, ANAtten			TINYINT				NULL
+		, FNIsLate			TINYINT				NULL
+		, ANIsEarly			TINYINT				NULL
+		, HandledStaffId	INT					NULL
+		, Remarks			NVARCHAR(300)		NULL
+		, FNCreatedUserId	SMALLINT			NULL
+		, FNCreatedDateTime	DATETIME			NULL
+		, FNLoginId			BIGINT				NULL
+		, ANCreatedUserId	SMALLINT			NULL
+		, ANCreatedDateTime	datetime			NULL
+		, ANLoginId			BIGINT				NULL
+		, CONSTRAINT	pk__SchoolAcad_SchoolAttendance__AttendanceId			PRIMARY KEY (AttendanceId)
+		, CONSTRAINT	uk__SchoolAcad_SchoolAttendance__StudentId_ClassId_DateId	UNIQUE NONCLUSTERED (StudentId, ClassId, DateId)
+		, CONSTRAINT	fk__SchoolAcad_SchoolAttendance__StudentId		 FOREIGN KEY (StudentId)		REFERENCES Academic.StudAdmnInfo(StudentId)
+		, CONSTRAINT	fk__SchoolAcad_SchoolAttendance__ClassId		 FOREIGN KEY (ClassId)		REFERENCES SchoolAcad.ClassMaster(ClassId)
+		, CONSTRAINT	fk__SchoolAcad_SchoolAttendance__HandledStaffId	 FOREIGN KEY (HandledStaffId)REFERENCES Staff.BasicInfo(StaffId)
+		, CONSTRAINT	fk__SchoolAcad_SchoolAttendance__FNCreatedUserId FOREIGN KEY (FNCreatedUserId)REFERENCES HR.Users(UserId)
+		, CONSTRAINT	fk__SchoolAcad_SchoolAttendance__ANCreatedUserId FOREIGN KEY (ANCreatedUserId)REFERENCES HR.Users(UserId)
+	)
+END
+GO
+
+IF OBJECT_ID(N'SchoolAcad.AttendanceTermsStud',N'U') IS NULL
+BEGIN	
+	--  DROP TABLE SchoolAcad.AttendanceTermsStud
+	--	SELECT * FROM SchoolAcad.AttendanceTermsStud
+	CREATE TABLE SchoolAcad.AttendanceTermsStud
+	(
+		AttendanceTermId    TINYINT			NOT NULL	IDENTITY(1,1)
+		, Term				NVARCHAR(50)
+		, ShortName			NVARCHAR(50)
+		, ShowAs			NVARCHAR(50)
+		, IsListed			BIT				NULL
+		, IsActive			BIT				NULL
+		, CreatedUserId		SMALLINT		NOT NULL
+		, CreatedDateTime	DATETIME		NOT NULL	DEFAULT	GETDATE()
+		, CONSTRAINT		pk__AttendanceTermsStud__AttendanceTermId	PRIMARY KEY (AttendanceTermId) 
+		, CONSTRAINT		uk__AttendanceTermsStud__Term	UNIQUE NONCLUSTERED (Term)
+		, CONSTRAINT		fk__AttendanceTermsStud__CreatedUserId	FOREIGN KEY (CreatedUserId) REFERENCES	HR.Users(UserId)
+	)
+	ON IMain
+END
+GO
+
+IF OBJECT_ID(N'SchoolAcad.StudClasses') IS NULL
+BEGIN	
+	--	SELECT * from SchoolAcad.StudClasses
+	-- DROP TABLE SchoolAcad.StudClasses
+	CREATE TABLE SchoolAcad.StudClasses
+	(
+		StudClassId			INT			NOT NULL	IDENTITY(1,1)
+		, StudentId			INT			NOT NULL
+		, AcadYearCr		TINYINT		NOT NULL
+		, ClassId			INT	        NOT NULL
+		, CreatedUserId		SMALLINT	NOT NULL
+		, CreatedDateTime	DATETIME	NOT NULL	DEFAULT		GETDATE()
+		, CONSTRAINT		pk__StudClasses__StudClassId		PRIMARY KEY (StudClassId DESC)	--ON IIndexes
+		, CONSTRAINT		uk__StudClasses__StudentId_AcadYearCr	UNIQUE NONCLUSTERED (StudentId,AcadYearCr) --ON IIndexes
+		, CONSTRAINT		fk__StudClasses__StudentId			FOREIGN KEY (StudentId)	REFERENCES	Academic.StudAdmnInfo(StudentId)
+		, CONSTRAINT		fk__StudClasses__AcadYearCr			FOREIGN KEY (AcadYearCr)	REFERENCES IBase.AcadYear(AcadYearId)
+		, CONSTRAINT		fk__StudClasses__ClassId			FOREIGN KEY (ClassId)	REFERENCES	SchoolAcad.ClassMaster(ClassId)
+		, CONSTRAINT		fk__StudClasses__CreatedUserId		FOREIGN KEY (CreatedUserId)	REFERENCES HR.Users(UserId)
+	)
+END
+GO
+
+IF OBJECT_ID(N'[SchoolAcad].[SchoolTestNameEntry]',N'U') IS NULL
+BEGIN
+
+	--	DROP TABLE [SchoolAcad].[SchoolTestNameEntry]
+	--- SELECT * FROM [SchoolAcad].[SchoolTestNameEntry]
+	CREATE TABLE [SchoolAcad].[SchoolTestNameEntry]
+	(
+		Id					int				NOT NULL	IDENTITY(1,1)
+		, AcadYearId		tinyint         NOT NULL
+		, TestTypeId		smallint		NOT NULL
+		, TestName			nvarchar(250)	NOT NULL		
+		, IsDec				tinyint			NOT NULL
+		, MaxMarks			decimal(6,2)	NOT NULL
+		, MinPass			decimal(6,2)	NOT NULL
+		, IsActive			BIT				NULL		
+		, Remarks			nvarchar(1000)	NULL
+		, CreatedUserId		smallint		NOT NULL
+		, CreatedDateTime	datetime		NOT NULL	DEFAULT GETDATE()
+		, LoginId			bigint			NOT NULL
+		, CONSTRAINT	pk__SchoolTestNameEntry__Id		PRIMARY KEY (Id)
+		, CONSTRAINT	uk__SchoolTestNameEntry__TestTypeId_TestName_AcadYearId  	UNIQUE NONCLUSTERED (TestTypeId,AcadYearId,TestName)		
+		, CONSTRAINT	fk__SchoolTestNameEntry__AcadYearId		FOREIGN KEY (AcadYearId) REFERENCES IBase.Acadyear(AcadYearId)
+		, CONSTRAINT	fk__SchoolTestNameEntry__CreatedUserId	FOREIGN KEY (CreatedUserId) REFERENCES HR.Users(UserId)
+	)
+END
+GO
+
+
+

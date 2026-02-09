@@ -44,7 +44,7 @@ namespace SchoolAPI.Controllers
             {
                 var result = await _classMasterRepository.MergeClassMasterAsync(classMaster);
 
-                _logger.LogInformation("Class merged successfully. ClassID: {ClassId}", classMaster.ClsId);
+                _logger.LogInformation("Class merged successfully. ClassID: {ClassId}", classMaster.ClassId);
 
                 return Ok(new ApiResponseDto<string>
                 {
@@ -55,7 +55,7 @@ namespace SchoolAPI.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "Business logic error merging ClassMaster (ClassID={ClassId})", classMaster?.ClsId);
+                _logger.LogError(ex, "Business logic error merging ClassMaster (ClassID={ClassId})", classMaster?.ClassId);
                 return StatusCode(500, new ApiResponseDto<string>
                 {
                     StatusCode = 500,
@@ -75,7 +75,7 @@ namespace SchoolAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error merging ClassMaster (ClassID={ClassId})", classMaster?.ClsId);
+                _logger.LogError(ex, "Unexpected error merging ClassMaster (ClassID={ClassId})", classMaster?.ClassId);
                 return StatusCode(500, new ApiResponseDto<string>
                 {
                     StatusCode = 500,

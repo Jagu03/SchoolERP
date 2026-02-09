@@ -39,7 +39,7 @@ namespace SchoolAPI.Controllers
             try
             {
                 var result = await _sectionMasterRepository.MergeSectionMasterAsync(sectionMaster);
-                _logger.LogInformation("Section merged successfully. SectionID: {SectionId}", sectionMaster.SecId);
+                _logger.LogInformation("Section merged successfully. SectionID: {SectionId}", sectionMaster.SectionId);
                 return Ok(new DTOs.ApiResponseDto<string>
                 {
                     StatusCode = 200,
@@ -49,7 +49,7 @@ namespace SchoolAPI.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "Business logic error merging SectionMaster (SectionID={SectionId})", sectionMaster?.SecId);
+                _logger.LogError(ex, "Business logic error merging SectionMaster (SectionID={SectionId})", sectionMaster?.SectionId);
                 return StatusCode(500, new DTOs.ApiResponseDto<string>
                 {
                     StatusCode = 500,

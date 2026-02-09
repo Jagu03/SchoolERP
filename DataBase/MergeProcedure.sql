@@ -10,15 +10,14 @@ GO
 ALTER PROCEDURE [SchoolAcad].[MergeClassMaster]
 (
 	  @EditId		    INT=0
-	, @ClassName		NVARCHAR(350)
+	, @ClassName		NVARCHAR(100)
 	, @DisplayOrder		INT
-	, @IsActive         TINYINT
+	, @IsActive         BIT
 	, @Remarks			NVARCHAR(1000)
 	, @CreatedUserId	SMALLINT	
 	, @LoginId			BIGINT = 0
 	, @result           NVARCHAR(350) = '' OUTPUT
 )
-WITH ENCRYPTION
 AS
 BEGIN
 SET NOCOUNT ON
@@ -35,16 +34,21 @@ SET NOCOUNT ON
 				VALUES (@ClassName,@DisplayOrder,@IsActive,@Remarks,@CreatedUserId,@LoginId)
 
 			    SET @result = 'The ClassName Saved Successfully'
-            END
-           END
+                END
+			END
 	     ELSE
 	    BEGIN
+		       IF EXISTS (SELECT 1 FROM [SchoolAcad].[ClassMaster] WHERE ClassName = @ClassName AND ClassId <> @EditId)
+			   BEGIN
+			       SET @result = 'The specified ClassName already exists.';
+				END
 		   UPDATE [SchoolAcad].[ClassMaster] SET
 			   ClassName =@ClassName,
 			   DisplayOrder = @DisplayOrder,
 			   IsActive = @IsActive,
 			   Remarks = @Remarks,
-			   CreatedUserId = @CreatedUserId,
+			   ModifiedUserId  = @CreatedUserId,
+			   ModifiedDateTime = GETDATE(),
 			   LoginId = @LoginId
 		  WHERE ClassId = @EditId
 
@@ -69,12 +73,11 @@ ALTER PROCEDURE [SchoolAcad].[MergeSectionMaster]
 (
 	  @EditId		    INT=0
 	, @SectionName		NVARCHAR(350)
-	, @IsActive         TINYINT	
+	, @IsActive         BIT	
 	, @CreatedUserId	SMALLINT	
 	, @LoginId			BIGINT = 0
 	, @result           NVARCHAR(350) = '' OUTPUT
 )
-WITH ENCRYPTION
 AS
 BEGIN
 SET NOCOUNT ON
@@ -123,8 +126,8 @@ ALTER PROCEDURE [SchoolAcad].[MergeClassSectionAllocation]
 	  @EditId		    INT = 0
 	, @ClassId		    INT
 	, @SectionId	    INT
-	, @AcadYearId	    SMALLINT
-	, @IsActive         TINYINT
+	, @AcadYearId	    TINYINT
+	, @IsActive         BIT
 	, @Remarks		    NVARCHAR(1000)
 	, @CreatedUserId	SMALLINT
 	, @LoginId		    BIGINT = 0
@@ -188,7 +191,7 @@ ALTER PROCEDURE [SchoolAcad].[MergeSubjectMaster]
 	, @SubjectName		NVARCHAR(50)
 	, @SubjectCode		NVARCHAR(50)
 	, @ShortName		NVARCHAR(50)
-	, @IsChoice         TINYINT
+	, @IsChoice         BIT
 	, @SubjTypeId       SMALLINT
 	, @Remarks		    NVARCHAR(100)
 	, @CreatedUserId	SMALLINT
@@ -225,7 +228,6 @@ BEGIN
 				IsChoice = @IsChoice,
 				SubjTypeId = @SubjTypeId,
 				Remarks = @Remarks,
-				CreatedUserId = @CreatedUserId,
 				LoginId = @LoginId
 			WHERE SubjectId = @EditId
 
@@ -252,8 +254,8 @@ ALTER PROCEDURE SchoolAcad.MergeClassSectionSubjectMap
 	, @ClassId         INT
 	, @SectionId       INT
 	, @SubjectId       INT
-	, @AcadYearId      SMALLINT
-	, @IsActive        TINYINT
+	, @AcadYearId      TINYINT
+	, @IsActive        BIT
 	, @Remarks         NVARCHAR(200)
 	, @CreatedUserId   SMALLINT
 	, @LoginId         BIGINT
@@ -593,6 +595,14 @@ BEGIN
 	-- INSERT
 	IF @EditId = 0
 	BEGIN
+	 IF EXISTS (SELECT 1 FROM SchoolAcad.LessonPlan  WHERE AcadYearId = @AcadYearId
+                  AND ClassId = @ClassId AND SubjectId = @SubjectId AND StaffId = @StaffId
+                  AND Unit = @Unit AND TopicTitle = @TopicTitle AND IsActive = 1)
+            BEGIN
+                SET @Result = 'Lesson plan already exists.';
+                RETURN;
+            END
+
 		INSERT INTO SchoolAcad.LessonPlan(ClassId, SectionId, SubjectId, StaffId, AcadYearId,
 			TopicTitle, TopicDescription,PlannedFromDate, PlannedToDate, Unit , TeachingMethod,
 			StudentLearningMethod, StatusText, IsActive, Remarks,CreatedUserId, LoginId)
@@ -803,6 +813,8 @@ SET NOCOUNT ON
 			  AssignmentId = @AssignmentId,
 			  StudentId = @StudentId,
 			  SubmissionStatus = @SubmissionStatus,
+			  ObtainedMarks = @ObtainedMarks,
+              SubmissionDate = @SubmissionDate,
 			  Remarks = @Remarks,
 			  LoginId = @LoginId
 			  WHERE MarkId = @EditId
@@ -858,6 +870,268 @@ BEGIN
 
         SET @Result = 'Elective subject updated successfully.';
     END
+
+    SET NOCOUNT OFF;
+END
+GO
+
+/*=========================================================================================================
+                                       MergeHourSetting
+============================================================================================================*/
+IF OBJECT_ID(N'SchoolAcad.MergeHourSetting', N'P') IS NULL
+BEGIN
+    EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.MergeHourSetting AS SELECT 1'
+END
+GO
+
+ALTER PROCEDURE SchoolAcad.MergeHourSetting
+(
+      @EditId        INT = 0
+    , @FromDt        DATE
+    , @ClassId       INT NOT NULL
+    , @HourId        TINYINT
+    , @FromTime      NVARCHAR(10)
+    , @ToTime        NVARCHAR(10)
+    , @SessNameId    TINYINT = NULL
+    , @IsActive      BIT
+    , @IsCommon      BIT
+    , @CourseId      SMALLINT
+    , @CreatedUserId SMALLINT
+    , @LoginId       BIGINT
+    , @Result        NVARCHAR(300) OUTPUT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @EditId = 0
+    BEGIN
+        IF EXISTS (SELECT 1 FROM SchoolAcad.HourSetting
+            WHERE HourId = @HourId AND ISNULL(ClassId,0) = ISNULL(@ClassId,0))
+        BEGIN
+            SET @Result = 'Hour already exists for this class.'
+            RETURN
+        END
+
+        INSERT INTO SchoolAcad.HourSetting(FromDt, ClassId, HourId, FromTime, ToTime,
+            SessNameId, IsActive, IsCommon,CreatedUserId, CourseId, LoginId)
+        VALUES(@FromDt, @ClassId, @HourId, @FromTime, @ToTime,@SessNameId, @IsActive, @IsCommon,
+            @CreatedUserId, @CourseId, @LoginId)
+
+        SET @Result = 'Hour setting saved successfully.'
+    END
+    ELSE
+    BEGIN
+        UPDATE SchoolAcad.HourSetting SET
+            FromDt = @FromDt,
+            ClassId = @ClassId,
+            HourId = @HourId,
+            FromTime = @FromTime,
+            ToTime = @ToTime,
+            SessNameId = @SessNameId,
+            IsActive = @IsActive,
+            IsCommon = @IsCommon,
+            CourseId = @CourseId,
+            LoginId = @LoginId
+        WHERE HourSettingId = @EditId
+
+        SET @Result = 'Hour setting updated successfully.'
+    END
+
+    SET NOCOUNT OFF;
+END
+GO
+
+/*=========================================================================================================
+                                       SaveTimeTable
+============================================================================================================*/
+IF OBJECT_ID(N'SchoolAcad.SaveTimeTable', N'P') IS NULL
+BEGIN
+    EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.SaveTimeTable AS SELECT 1'
+END
+GO
+
+ALTER PROCEDURE SchoolAcad.SaveTimeTable
+(    
+    @AcadYearId     TINYINT,
+    @ClassId        INT,
+    @SectionId      INT,
+    @DayId          SMALLINT,
+    @HourId         INT,
+	@hourList		NVARCHAR(500) = '',
+    @PeriodNoId     TINYINT,
+    @SubjectId      INT,
+    @StaffId        INT,
+    @Remarks        NVARCHAR(500),
+    @CreatedUserId  SMALLINT,
+    @LoginId        BIGINT,
+    @Result         NVARCHAR(300) OUTPUT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    
+
+    SET NOCOUNT OFF;
+END
+GO
+
+/*=========================================================================================================
+                                      
+============================================================================================================*/
+IF OBJECT_ID(N'SchoolAcad.PromoteStudentClass', N'P') IS NULL
+BEGIN
+    EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.PromoteStudentClass AS SELECT 1'
+END
+GO
+
+ALTER PROCEDURE SchoolAcad.PromoteStudentClass
+(
+      @StudentId     INT
+    , @FromAcadYear  TINYINT
+    , @ToAcadYear    TINYINT
+    , @NewClassId    INT
+    , @CreatedUserId SMALLINT
+    , @Result        NVARCHAR(300) OUTPUT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Validate student exists in previous year
+    IF NOT EXISTS (
+        SELECT 1 FROM SchoolAcad.StudClasses
+        WHERE StudentId = @StudentId
+          AND AcadYearCr = @FromAcadYear
+    )
+    BEGIN
+        SET @Result = 'Student not found in previous academic year.'
+        RETURN
+    END
+
+    -- Prevent duplicate promotion
+    IF EXISTS (
+        SELECT 1 FROM SchoolAcad.StudClasses
+        WHERE StudentId = @StudentId
+          AND AcadYearCr = @ToAcadYear
+    )
+    BEGIN
+        SET @Result = 'Student already promoted for this academic year.'
+        RETURN
+    END
+
+    -- INSERT promotion record
+    INSERT INTO SchoolAcad.StudClasses
+    (
+        StudentId,
+        AcadYearCr,
+        ClassId,
+        CreatedUserId
+    )
+    VALUES
+    (
+        @StudentId,
+        @ToAcadYear,
+        @NewClassId,
+        @CreatedUserId
+    )
+
+    SET @Result = 'Student promoted successfully.'
+    SET NOCOUNT OFF;
+END
+GO
+
+
+IF OBJECT_ID(N'SchoolAcad.AddNewStudentClass', N'P') IS NULL
+BEGIN
+    EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.AddNewStudentClass AS SELECT 1'
+END
+GO
+
+ALTER PROCEDURE SchoolAcad.AddNewStudentClass
+(
+      @StudentId     INT
+    , @AcadYearCr    TINYINT
+    , @ClassId       INT
+    , @CreatedUserId SMALLINT
+    , @Result        NVARCHAR(300) OUTPUT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (
+        SELECT 1 FROM SchoolAcad.StudClasses
+        WHERE StudentId = @StudentId
+          AND AcadYearCr = @AcadYearCr
+    )
+    BEGIN
+        SET @Result = 'Student already exists for this academic year.'
+        RETURN
+    END
+
+    INSERT INTO SchoolAcad.StudClasses
+    (
+        StudentId,
+        AcadYearCr,
+        ClassId,
+        CreatedUserId
+    )
+    VALUES
+    (
+        @StudentId,
+        @AcadYearCr,
+        @ClassId,
+        @CreatedUserId
+    )
+
+    SET @Result = 'New student admitted successfully.'
+    SET NOCOUNT OFF;
+END
+GO
+
+
+
+IF OBJECT_ID(N'SchoolAcad.SaveAttendance_ForClass_Ondate', N'P') IS NULL
+BEGIN
+    EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.SaveAttendance_ForClass_Ondate AS SELECT 1'
+END
+GO
+
+CREATE PROCEDURE [SchoolAcad].[SaveAttendance_ForClass_Ondate]
+(
+  @ClassId         INT
+  ,@StudList       NVARCHAR(MAX)
+  ,@attendanceStatusId SMALLINT
+  ,@dateStr        NVARCHAR(15)
+  ,@sessionId      TINYINT    -- 1.Fullday 2.FN 3.AN
+  ,@remarks        NVARCHAR(500) = NULL
+  ,@studStat       TINYINT = 1
+  ,@CreatedUserId  SMALLINT
+  ,@LoginId        BIGINT
+  ,@Result         NVARCHAR(300) OUTPUT
+)
+
+AS
+BEGIN
+
+    SET NOCOUNT ON;
+
+    DECLARE @dateId int
+
+    SET @dateId = CONVERT(int, CONVERT(datetime , @dateStr , 103))
+
+    ;WITH StudList AS(
+        SELECT sai.StudentId 
+        FROM Academic.StudAdmnInfo sai
+        INNER JOIN SchoolAcad.StudClasses SC ON SC.StudentId  = sai.StudentId
+        WHERE SC.ClassId = @ClassId
+              AND sai.StudStat = CASE @studStat WHEN 2 THEN sai.StudStat ELSE @studStat END
+	    EXCEPT
+	    SELECT studentId FROM [SchoolAcad].[SchoolAttendance]
+	    WHERE classId= @classId AND DateId = @DateId
+     )
 
     SET NOCOUNT OFF;
 END

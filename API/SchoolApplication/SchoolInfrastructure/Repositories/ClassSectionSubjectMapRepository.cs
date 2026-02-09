@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using SchoolApplication.Interface;
 using SchoolDomain.Entities;
 using System.Data;
-using static System.Collections.Specialized.BitVector32;
 
 namespace SchoolInfrastructure.Repositories
 {
@@ -31,14 +30,14 @@ namespace SchoolInfrastructure.Repositories
             var parameters = new DynamicParameters();
             {
                 parameters.Add("@EditId", classSectionSubjectMap.Mapid);
-                parameters.Add("@ClassId", classSectionSubjectMap.clsid);
-                parameters.Add("@SectionId", classSectionSubjectMap.secid);
-                parameters.Add("@SubjectId", classSectionSubjectMap.subid);
-                parameters.Add("@AcadYearId", classSectionSubjectMap.ayid);
-                parameters.Add("@IsActive", classSectionSubjectMap.isn);
-                parameters.Add("@Remarks", classSectionSubjectMap.rmk);
-                parameters.Add("@CreatedUserId", classSectionSubjectMap.cuid);
-                parameters.Add("@LoginId", classSectionSubjectMap.Logid);
+                parameters.Add("@ClassId", classSectionSubjectMap.ClassId);
+                parameters.Add("@SectionId", classSectionSubjectMap.SectionId);
+                parameters.Add("@SubjectId", classSectionSubjectMap.SubjectId);
+                parameters.Add("@AcadYearId", classSectionSubjectMap.AcadYearId);
+                parameters.Add("@IsActive", classSectionSubjectMap.IsActive);
+                parameters.Add("@Remarks", classSectionSubjectMap.Remarks);
+                parameters.Add("@CreatedUserId", classSectionSubjectMap.CreatedUserId);
+                parameters.Add("@LoginId", classSectionSubjectMap.LoginId);
                 parameters.Add("@result", dbType: DbType.String, size: 350, direction: ParameterDirection.Output);
 
                 await connection.ExecuteAsync("SchoolAcad.MergeClassSectionSubjectMap",
@@ -48,7 +47,7 @@ namespace SchoolInfrastructure.Repositories
             }
         }
 
-        public async Task<(IEnumerable<ClassSectionSubjectMap> classSectionSubjectMaps, IEnumerable<SchoolInfo> SchoolDetails)> FetchClassSectionSubjectMapAsync(int classId, short acadYearId, int? sectionId)
+        public async Task<(IEnumerable<ClassSectionSubjectMap> classSectionSubjectMaps, IEnumerable<SchoolInfo> SchoolDetails)> FetchClassSectionSubjectMapAsync(int classId, byte acadYearId, int? sectionId)
         {
             await using var connection = new SqlConnection(_connectionString);
             var parameters = new DynamicParameters();

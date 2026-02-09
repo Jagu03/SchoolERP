@@ -27,14 +27,14 @@ namespace SchoolInfrastructure.Repositories
         {
             await using var connection = new SqlConnection(_connectionString);
             var parameters = new DynamicParameters();
-            parameters.Add("@EditId", classSectionAllocation.alid);
-            parameters.Add("@ClassId", classSectionAllocation.clsid);
-            parameters.Add("@SectionId", classSectionAllocation.secid);
-            parameters.Add("@AcadYearId", classSectionAllocation.ayid);
-            parameters.Add("@IsActive", classSectionAllocation.isc);
-            parameters.Add("@Remarks", classSectionAllocation.rmk);
-            parameters.Add("@CreatedUserId", classSectionAllocation.cuid);
-            parameters.Add("@LoginId", classSectionAllocation.Logid);
+            parameters.Add("@EditId", classSectionAllocation.AllocationId);
+            parameters.Add("@ClassId", classSectionAllocation.ClassId);
+            parameters.Add("@SectionId", classSectionAllocation.SectionId);
+            parameters.Add("@AcadYearId", classSectionAllocation.AcadYearId);
+            parameters.Add("@IsActive", classSectionAllocation.IsActive);
+            parameters.Add("@Remarks", classSectionAllocation.Remarks);
+            parameters.Add("@CreatedUserId", classSectionAllocation.CreatedUserId);
+            parameters.Add("@LoginId", classSectionAllocation.LoginId);
             parameters.Add("@result", dbType: DbType.String, size: 350, direction: ParameterDirection.Output);
 
             await connection.ExecuteAsync("SchoolAcad.MergeClassSectionAllocation",
@@ -43,7 +43,7 @@ namespace SchoolInfrastructure.Repositories
             return parameters.Get<string>("@result") ?? string.Empty;
         }
 
-        public async Task<(IEnumerable<ClassSectionAllocation> allocations, IEnumerable<SchoolInfo> SchoolDetails)> FetchClassSectionAllocationsAsync(short acadYearId)
+        public async Task<(IEnumerable<ClassSectionAllocation> allocations, IEnumerable<SchoolInfo> SchoolDetails)> FetchClassSectionAllocationsAsync(byte acadYearId)
         {
             await using var connection = new SqlConnection(_connectionString);
             var parameters = new DynamicParameters();

@@ -28,11 +28,11 @@ namespace SchoolInfrastructure.Repositories
         {
             await using var connection = new SqlConnection(_connectionString);
             var parameters = new DynamicParameters();
-            parameters.Add("@EditId", sectionMaster.SecId);
-            parameters.Add("@SectionName", sectionMaster.txt);
-            parameters.Add("@IsActive", sectionMaster.isc);
-            parameters.Add("@CreatedUserId", sectionMaster.cuid);
-            parameters.Add("@LoginId", sectionMaster.Logid);
+            parameters.Add("@EditId", sectionMaster.SectionId);
+            parameters.Add("@SectionName", sectionMaster.SectionName);
+            parameters.Add("@IsActive", sectionMaster.IsActive);
+            parameters.Add("@CreatedUserId", sectionMaster.CreatedUserId);
+            parameters.Add("@LoginId", sectionMaster.LoginId);
             parameters.Add("@result", dbType: DbType.String, size: 350, direction: ParameterDirection.Output);
 
             await connection.ExecuteAsync("SchoolAcad.MergeSectionMaster",

@@ -9,13 +9,13 @@ namespace SchoolDomain.Entities
 {
     public class SectionMaster
     {
-        public int SecId { get; set; }
+        public int SectionId { get; set; }
 
         [Required(ErrorMessage = "Section name is required.")]
-        public string txt { get; set; } = string.Empty;
-        public byte isc { get; set; }
-        public short cuid { get; set; }
-        public long Logid { get; set; }
+        public string SectionName { get; set; } = string.Empty;
+        public bool IsActive { get; set; }
+        public short CreatedUserId { get; set; }
+        public long LoginId { get; set; }
 
     }
 }
