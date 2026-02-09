@@ -4,12 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SchoolApplication.Interface;
 using SchoolDomain.Entities;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SchoolInfrastructure.Repositories
 {
@@ -33,15 +28,15 @@ namespace SchoolInfrastructure.Repositories
         {
             await using var connection = new SqlConnection(_connectionString);
             var parameters = new DynamicParameters();
-            parameters.Add("@EditId", subjectMaster.subid);
-            parameters.Add("@SubjectName", subjectMaster.txt);
-            parameters.Add("@SubjectCode", subjectMaster.subcode);
-            parameters.Add("@ShortName", subjectMaster.shorttxt);
-            parameters.Add("@IsChoice", subjectMaster.isc);
-            parameters.Add("@SubjTypeId", subjectMaster.stypid);
-            parameters.Add("@Remarks", subjectMaster.rmk);
-            parameters.Add("@CreatedUserId", subjectMaster.cuid);
-            parameters.Add("@LoginId", subjectMaster.Logid);
+            parameters.Add("@EditId", subjectMaster.SubjectId);
+            parameters.Add("@SubjectName", subjectMaster.SubjectName);
+            parameters.Add("@SubjectCode", subjectMaster.SubjectCode);
+            parameters.Add("@ShortName", subjectMaster.ShortName);
+            parameters.Add("@IsChoice", subjectMaster.IsChoice);
+            parameters.Add("@SubjTypeId", subjectMaster.SubjTypeId  );
+            parameters.Add("@Remarks", subjectMaster.Remarks);
+            parameters.Add("@CreatedUserId", subjectMaster.CreatedUserId);
+            parameters.Add("@LoginId", subjectMaster.LoginId);
             parameters.Add("@result", dbType: DbType.String, size: 350, direction: ParameterDirection.Output);
 
             await connection.ExecuteAsync("SchoolAcad.MergeSubjectMaster",

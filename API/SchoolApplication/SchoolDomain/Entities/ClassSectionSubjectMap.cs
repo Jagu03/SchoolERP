@@ -3,18 +3,17 @@
     public class ClassSectionSubjectMap
     {
         public int Mapid { get; set; }
-        public int clsid { get; set; }
-        public int subid { get; set; }
-        public int secid { get; set; }
-        public byte ayid { get; set; }
-        public string txt { get; set; } = string.Empty;
-        public string secn { get; set; } = string.Empty;
-        public string ftxt { get; set; } = string.Empty;
-        public byte isn { get; set; }
-        public string rmk { get; set; } = string.Empty;
-        public short cuid { get; set; }
-        public int sessid { get; set; }
-        public long Logid { get; set; }
+        public int ClassId { get; set; }
+        public int SubjectId { get; set; }
+        public int SectionId { get; set; }
+        public byte AcadYearId { get; set; }
+        public string ClassName { get; set; } = string.Empty;
+        public string SectionName { get; set; } = string.Empty;
+        public string SubjectName { get; set; } = string.Empty;
+        public byte IsActive { get; set; }
+        public string Remarks { get; set; } = string.Empty;
+        public short CreatedUserId { get; set; }
+        public long LoginId  { get; set; }
     }
 }
 

@@ -43,7 +43,7 @@ namespace SchoolAPI.Controllers
             {
                 var result = await _classSectionAllocationRepository.MergeAllocateClassSectionAsync(classSectionAllocation);
 
-                _logger.LogInformation("Class section allocation merged successfully. AllocationID: {AllocationId}", classSectionAllocation.alid);
+                _logger.LogInformation("Class section allocation merged successfully. AllocationID: {AllocationId}", classSectionAllocation.AllocationId);
 
                 return Ok(new ApiResponseDto<string>
                 {
@@ -54,7 +54,7 @@ namespace SchoolAPI.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "Error merging ClassSectionAllocation (AllocationID={AllocationId})", classSectionAllocation?.alid);
+                _logger.LogError(ex, "Error merging ClassSectionAllocation (AllocationID={AllocationId})", classSectionAllocation?.AllocationId);
                 return StatusCode(500, new ApiResponseDto<string>
                 {
                     StatusCode = 500,
@@ -74,7 +74,7 @@ namespace SchoolAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error merging ClassSectionAllocation (AllocationID={AllocationId})", classSectionAllocation?.alid);
+                _logger.LogError(ex, "Unexpected error merging ClassSectionAllocation (AllocationID={AllocationId})", classSectionAllocation?.AllocationId);
                 return StatusCode(500, new ApiResponseDto<string>
                 {
                     StatusCode = 500,
@@ -86,7 +86,7 @@ namespace SchoolAPI.Controllers
 
         [HttpGet("FetchClassSectionAllocations")]
         [AllowAnonymous]
-        public async Task<IActionResult> FetchClassSectionAllocations([FromQuery] short acadYearId)
+        public async Task<IActionResult> FetchClassSectionAllocations([FromQuery] byte acadYearId)
         {
             if (acadYearId <= 0)
             {

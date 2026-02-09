@@ -64,13 +64,13 @@ namespace SchoolAPI.Controllers
 
         [HttpGet("FetchClassSectionSubjectMap")]
         [AllowAnonymous]
-        public async Task<IActionResult> FetchClassSectionSubjectMap([FromQuery] int classId, short acadYearId, int? sectionId)
+        public async Task<IActionResult> FetchClassSectionSubjectMap([FromQuery] int classId, byte acadYearId, int? sectionId)
         {
             try
             {
                 var data = await _classSectionSubjectMapRepository.FetchClassSectionSubjectMapAsync(classId, acadYearId, sectionId);
 
-                _logger.LogInformation("Fetched {AllocationCount} allocations for academic year {AcadYearId}",
+                _logger.LogInformation("Fetched {Count} allocations for ClassId={ClassId}, AcadYearId={AcadYearId}, SectionId={SectionId}",
                  data.classSectionSubjectMaps.Count(), classId, acadYearId, sectionId);
 
                 return Ok(new ApiResponseDto<object>

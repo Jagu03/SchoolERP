@@ -28,13 +28,13 @@ namespace SchoolInfrastructure.Repositories
         {          
                 await using var connection = new SqlConnection(_connectionString);
                 var parameters = new DynamicParameters();
-                parameters.Add("@EditId", classMaster.ClsId);
-                parameters.Add("@ClassName", classMaster.txt);
-                parameters.Add("@DisplayOrder", classMaster.dpyor);
-                parameters.Add("@IsActive", classMaster.isc);
-                parameters.Add("@Remarks", classMaster.rmk);
-                parameters.Add("@CreatedUserId", classMaster.cuid);
-                parameters.Add("@LoginId", classMaster.Logid);
+                parameters.Add("@EditId", classMaster.ClassId);
+                parameters.Add("@ClassName", classMaster.ClassName);
+                parameters.Add("@DisplayOrder", classMaster.DisplayOrder);
+                parameters.Add("@IsActive", classMaster.IsActive);
+                parameters.Add("@Remarks", classMaster.Remarks);
+                parameters.Add("@CreatedUserId", classMaster.CreatedUserId);
+                parameters.Add("@LoginId", classMaster.LoginId);
                 parameters.Add("@result", dbType: DbType.String, size: 350, direction: ParameterDirection.Output);
 
                 await connection.ExecuteAsync("SchoolAcad.MergeClassMaster",

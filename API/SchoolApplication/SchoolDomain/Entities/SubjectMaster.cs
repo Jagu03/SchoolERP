@@ -1,27 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SchoolDomain.Entities
 {
     public class SubjectMaster
     {
-        public int subid { get; set; }
+        public int SubjectId { get; set; }
 
         [Required(ErrorMessage = "Subject name is required.")]
-        public string txt { get; set; } = string.Empty;
-        public string subcode { get; set; } = string.Empty;
+        public string SubjectName { get; set; } = string.Empty;
+        public string SubjectCode { get; set; } = string.Empty;
 
-        [StringLength(20, ErrorMessage = "Short name cannot exceed 20 characters.")]
-        public string shorttxt { get; set; } = string.Empty;
-        public byte isc { get; set; }
-        public short stypid { get; set; }
-        public string ftxt { get; set; } = string.Empty;
-        public string rmk { get; set; } = string.Empty;
-        public short cuid { get; set; }
-        public long Logid { get; set; }
+        [StringLength(50, ErrorMessage = "Short name cannot exceed 50 characters.")]
+        public string ShortName { get; set; } = string.Empty;
+        public bool IsChoice { get; set; }
+        public short SubjTypeId { get; set; }
+        public string FullName { get; set; } = string.Empty;
+
+        [StringLength(100, ErrorMessage = "Remarks cannot exceed 100 characters.")]
+        public string Remarks { get; set; } = string.Empty;
+        public short CreatedUserId { get; set; }
+        public long LoginId { get; set; }
     }
 }

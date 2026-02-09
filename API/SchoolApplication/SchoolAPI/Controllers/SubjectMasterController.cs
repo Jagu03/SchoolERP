@@ -38,7 +38,7 @@ namespace SchoolAPI.Controllers
             try
             {
                 var result = await _subjectMasterRepository.MergeSubjectMasterAsync(subjectMaster);
-                _logger.LogInformation("Subject merged successfully. SubjectID: {SubjectId}", subjectMaster.subid);
+                _logger.LogInformation("Subject merged successfully. SubjectID: {SubjectId}", subjectMaster.SubjectId);
                 return Ok(new DTOs.ApiResponseDto<string>
                 {
                     StatusCode = 200,
@@ -48,7 +48,7 @@ namespace SchoolAPI.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "Business logic error merging SubjectMaster (SubjectID={SubjectId})", subjectMaster?.subid);
+                _logger.LogError(ex, "Business logic error merging SubjectMaster (SubjectID={SubjectId})", subjectMaster?.SubjectId);
                 return StatusCode(500, new DTOs.ApiResponseDto<string>
                 {
                     StatusCode = 500,

@@ -17,6 +17,9 @@ namespace SchoolAPI.Extensions
             services.AddScoped<IClassSectionSubjectMapRepository, ClassSectionSubjectMapRepository>();
             services.AddScoped<ISyllabusFinalizationRepository, SyllabusFinalizationRepository>();
             services.AddScoped<IStaffSubjectAllocationRepository, StaffSubjectAllocationRepository>();
+            services.AddScoped<ILessonPlanRepository, LessonPlanRepository>();
+            services.AddScoped<IClassroomTeachingRepository, ClassroomTeachingRepository>();
+            services.AddScoped<IAssignmentMasterRepository, AssignmentMasterRepository>();
             return services;
         }
     }
