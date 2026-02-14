@@ -8,27 +8,21 @@ using System.Data;
 
 namespace SchoolInfrastructure.Repositories
 {
-    public class SyllabusFinalizationRepository : ISyllabusFinalizationRepository
+    public class SyllabusFinalizationRepository : BaseRepository, ISyllabusFinalizationRepository
     {
-        private readonly string _connectionString;
-        private readonly ILogger<SyllabusFinalizationRepository> _logger;
-
         public SyllabusFinalizationRepository(IConfiguration configuration, ILogger<SyllabusFinalizationRepository> logger)
+            : base(configuration, logger)
         {
-            _connectionString = configuration.GetConnectionString("LiveDBContext") ?? string.Empty;
-            _logger = logger;
-
-            if (string.IsNullOrWhiteSpace(_connectionString))
-            {
-                throw new InvalidOperationException("Connection string 'LiveDBContext' is not configured. Configure it in appsettings.json or an environment variable.");
-            }
         }
 
         public async Task<string> MergeSyllabusFinalizationAsync(SyllabusFinalization syllabusFinalization)
         {
-            await using var connection = new SqlConnection(_connectionString);
-            var parameters = new DynamicParameters();
+            ArgumentNullException.ThrowIfNull(syllabusFinalization);
+
+            try
             {
+                await using var connection = CreateConnection();
+                var parameters = new DynamicParameters();
                 parameters.Add("@EditId", syllabusFinalization.SyllabusFinalId);
                 parameters.Add("@ClassId", syllabusFinalization.ClassId);
                 parameters.Add("@SectionId", syllabusFinalization.SectionId);
@@ -41,51 +35,51 @@ namespace SchoolInfrastructure.Repositories
                 parameters.Add("@result", dbType: DbType.String, size: 350, direction: ParameterDirection.Output);
 
                 await connection.ExecuteAsync("SchoolAcad.MergeSyllabusFinalization",
-                parameters, commandType: CommandType.StoredProcedure);
+                    parameters, commandType: CommandType.StoredProcedure);
 
                 return parameters.Get<string>("@result") ?? string.Empty;
             }
+            catch (SqlException ex)
+            {
+                throw HandleDatabaseError(ex, "MergeSyllabusFinalization", $"SyllabusFinalId={syllabusFinalization.SyllabusFinalId}");
+            }
+            catch (Exception ex)
+            {
+                LogUnexpectedError(ex, "MergeSyllabusFinalization", $"SyllabusFinalId={syllabusFinalization.SyllabusFinalId}");
+                throw;
+            }
         }
 
-        //public async Task<(IEnumerable<SyllabusFinalization> syllabusFinalization,IEnumerable<SchoolInfo> SchoolDetails)> FetchSyllabusFinalizationAsync(int classId, short acadYearId, int? sectionId)
-        //{
-        //    await using var connection = new SqlConnection(_connectionString);
-        //    var parameters = new DynamicParameters();
-        //    parameters.Add("@ClassId", classId, DbType.Int32);
-        //    parameters.Add("@AcadYearId", acadYearId, DbType.Int16);
-        //    parameters.Add("@SectionId", sectionId, DbType.Int16);
-
-        //    await using var multi = await connection.QueryMultipleAsync(
-        //        "[SchoolAcad].[FetchSyllabusFinalization]",
-        //        parameters,
-        //        commandType: CommandType.StoredProcedure);
-
-        //    // Materialize the first result set immediately
-        //    var syllabusFinalization = (await multi.ReadAsync<SyllabusFinalization>()).ToList();
-
-        //    // Try to read a second result set only if available
-        //    IEnumerable<SchoolInfo> schoolDetails = Enumerable.Empty<SchoolInfo>();
-        //    if (!multi.IsConsumed)
-        //    {
-        //        schoolDetails = (await multi.ReadAsync<SchoolInfo>()).ToList();
-        //    }
-
-        //    return (syllabusFinalization, schoolDetails);
-        //}
         public async Task<IEnumerable<SyllabusFinalizationView>> FetchSyllabusFinalizationAsync(int classId, short acadYearId, int? sectionId)
         {
-            await using var connection = new SqlConnection(_connectionString);
+            try
+            {
+                await using var connection = CreateConnection();
 
-            var parameters = new DynamicParameters();
-            parameters.Add("@ClassId", classId, DbType.Int32);
-            parameters.Add("@AcadYearId", acadYearId, DbType.Int16);
-            parameters.Add("@SectionId", sectionId, DbType.Int32);
+                var parameters = new DynamicParameters();
+                parameters.Add("@ClassId", classId, DbType.Int32);
+                parameters.Add("@AcadYearId", acadYearId, DbType.Int16);
+                parameters.Add("@SectionId", sectionId, DbType.Int32);
 
-            return await connection.QueryAsync<SyllabusFinalizationView>(
-                "[SchoolAcad].[FetchSyllabusFinalization]",
-                parameters,
-                commandType: CommandType.StoredProcedure);
+                var result = await connection.QueryAsync<SyllabusFinalizationView>(
+                    "[SchoolAcad].[FetchSyllabusFinalization]",
+                    parameters,
+                    commandType: CommandType.StoredProcedure);
+
+                Logger.LogInformation("Fetched {Count} syllabus finalization records", result.Count());
+                return result;
+            }
+            catch (SqlException ex)
+            {
+                throw HandleDatabaseError(ex, "FetchSyllabusFinalization", $"ClassId={classId}, AcadYearId={acadYearId}");
+            }
+            catch (Exception ex)
+            {
+                LogUnexpectedError(ex, "FetchSyllabusFinalization", $"ClassId={classId}, AcadYearId={acadYearId}");
+                throw;
+            }
         }
-
     }
 }
+
+

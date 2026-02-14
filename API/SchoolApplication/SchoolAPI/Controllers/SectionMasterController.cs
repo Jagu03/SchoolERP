@@ -1,66 +1,65 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolAPI.DTOs;
+using SchoolAPI.Services;
 using SchoolApplication.Interface;
 using SchoolDomain.Entities;
 
 namespace SchoolAPI.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    [Authorize] // Default: Require authentication
-    public class SectionMasterController : ControllerBase
+    /// <summary>
+    /// Controller for managing section master data.
+    /// </summary>
+    [Authorize]
+    public class SectionMasterController : BaseApiController
     {
-        private readonly ISectionMasterRepository _sectionMasterRepository;    
-        private readonly ILogger<SectionMasterController> _logger;  
+        private readonly ISectionMasterRepository _sectionMasterRepository;
 
-        public SectionMasterController(ISectionMasterRepository sectionMasterRepository, ILogger<SectionMasterController> logger)
+        public SectionMasterController(
+            ISectionMasterRepository sectionMasterRepository,
+            ILogger<SectionMasterController> logger,
+            IValidationService validationService)
+            : base(logger, validationService)
         {
-            _sectionMasterRepository = sectionMasterRepository;
-            _logger = logger;
+            _sectionMasterRepository = sectionMasterRepository ?? throw new ArgumentNullException(nameof(sectionMasterRepository));
         }
 
-        [HttpPost]
+        /// <summary>
+        /// Merge (insert/update) a section master record.
+        /// </summary>
+        [HttpPost("merge")]
         [AllowAnonymous]
-        public async Task<IActionResult> MergeSectionMaster([FromBody] SchoolDomain.Entities.SectionMaster sectionMaster)
+        public async Task<IActionResult> MergeSectionMaster([FromBody] SectionMaster sectionMaster)
         {
-            if (!ModelState.IsValid)
+            if (!ValidateModel(out var errors))
             {
-                var errors = string.Join("; ", ModelState.Values
-                    .SelectMany(v => v.Errors.Select(e => e.ErrorMessage)));
                 _logger.LogWarning("Invalid model state for MergeSectionMaster. Errors: {Errors}", errors);
-                return BadRequest(new DTOs.ApiResponseDto<string>
-                {
-                    StatusCode = 400,
-                    Message = "Model validation failed.",
-                    Data = errors
-                });
+                return ValidationErrorResponse(errors);
             }
+
             try
             {
                 var result = await _sectionMasterRepository.MergeSectionMasterAsync(sectionMaster);
                 _logger.LogInformation("Section merged successfully. SectionID: {SectionId}", sectionMaster.SectionId);
-                return Ok(new DTOs.ApiResponseDto<string>
-                {
-                    StatusCode = 200,
-                    Message = "Section master record processed successfully.",
-                    Data = result
-                });
+                return SuccessResponse(result, "Section master record processed successfully.", 200);
             }
             catch (InvalidOperationException ex)
             {
                 _logger.LogError(ex, "Business logic error merging SectionMaster (SectionID={SectionId})", sectionMaster?.SectionId);
-                return StatusCode(500, new DTOs.ApiResponseDto<string>
-                {
-                    StatusCode = 500,
-                    Message = "An error occurred while processing your request.",
-                    Data = null
-                });
+                return ErrorResponse("An error occurred while processing your request.", 500, "BUSINESS_LOGIC_ERROR");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error merging SectionMaster (SectionID={SectionId})", sectionMaster?.SectionId);
+                return ErrorResponse("An unexpected error occurred.", 500, "INTERNAL_SERVER_ERROR");
             }
         }
 
-        [HttpGet("Fetch")]
-        [AllowAnonymous] // Read-only operation, safe to allow anonymous access
+        /// <summary>
+        /// Fetch all section master records.
+        /// </summary>
+        [HttpGet("fetch")]
+        [AllowAnonymous]
         public async Task<IActionResult> FetchSectionMaster()
         {
             try
@@ -69,21 +68,16 @@ namespace SchoolAPI.Controllers
 
                 _logger.LogInformation("Fetched {SectionCount} sections", data.sections.Count());
 
-                return Ok(new ApiResponseDto<object>
+                return SuccessResponse(new
                 {
-                    StatusCode = 200,
-                    Message = "Success",
-                    Data = new
-                    {
-                        SectionMaster = data.sections,
-                        SchoolDetails = data.SchoolDetails
-                    }
-                });
+                    SectionMaster = data.sections,
+                    SchoolDetails = data.SchoolDetails
+                }, "Success");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error in FetchSectionMaster");
-                throw; // Let GlobalExceptionMiddleware handle it
+                return ErrorResponse("An unexpected error occurred.", 500, "INTERNAL_SERVER_ERROR");
             }
         }
     }

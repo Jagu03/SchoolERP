@@ -8,25 +8,20 @@ using System.Data;
 
 namespace SchoolInfrastructure.Repositories
 {
-    public class ClassMasterRepository : IClassMasterRepository
+    public class ClassMasterRepository : BaseRepository, IClassMasterRepository
     {
-        private readonly string _connectionString;
-        private readonly ILogger<ClassMasterRepository> _logger;
-
         public ClassMasterRepository(IConfiguration configuration, ILogger<ClassMasterRepository> logger)
+            : base(configuration, logger)
         {
-            _connectionString = configuration.GetConnectionString("LiveDBContext") ?? string.Empty;
-            _logger = logger;
-
-            if (string.IsNullOrWhiteSpace(_connectionString))
-            {
-                throw new InvalidOperationException("Connection string 'LiveDBContext' is not configured. Configure it in appsettings.json or an environment variable.");
-            }
         }
 
         public async Task<string> MergeClassMasterAsync(ClassMaster classMaster)
-        {          
-                await using var connection = new SqlConnection(_connectionString);
+        {
+            ArgumentNullException.ThrowIfNull(classMaster);
+
+            try
+            {
+                await using var connection = CreateConnection();
                 var parameters = new DynamicParameters();
                 parameters.Add("@EditId", classMaster.ClassId);
                 parameters.Add("@ClassName", classMaster.ClassName);
@@ -40,14 +35,24 @@ namespace SchoolInfrastructure.Repositories
                 await connection.ExecuteAsync("SchoolAcad.MergeClassMaster",
                     parameters, commandType: CommandType.StoredProcedure);
 
-                return parameters.Get<string>("@result") ?? string.Empty;         
+                return parameters.Get<string>("@result") ?? string.Empty;
+            }
+            catch (SqlException ex)
+            {
+                throw HandleDatabaseError(ex, "MergeClassMaster", $"ClassId={classMaster.ClassId}");
+            }
+            catch (Exception ex)
+            {
+                LogUnexpectedError(ex, "MergeClassMaster", $"ClassId={classMaster.ClassId}");
+                throw;
+            }
         }
 
         public async Task<(IEnumerable<ClassMaster> classes, IEnumerable<SchoolInfo> School)> FetchClassMasterAsync()
         {
             try
             {
-                await using var connection = new SqlConnection(_connectionString);
+                await using var connection = CreateConnection();
                 await using var multi = await connection.QueryMultipleAsync(
                     "[SchoolAcad].[FetchClassMaster]", commandType: CommandType.StoredProcedure);
 
@@ -59,19 +64,20 @@ namespace SchoolInfrastructure.Repositories
                     school = (await multi.ReadAsync<SchoolInfo>()).ToList();
                 }
 
-                _logger.LogInformation("Fetched {ClassCount} classes successfully", classes.Count);
+                Logger.LogInformation("Fetched {ClassCount} classes successfully", classes.Count);
                 return (classes, school);
             }
             catch (SqlException ex)
             {
-                _logger.LogError(ex, "Database error while fetching ClassMaster");
-                throw new InvalidOperationException("An error occurred while fetching class master records.", ex);
+                throw HandleDatabaseError(ex, "FetchClassMaster");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error while fetching ClassMaster");
+                LogUnexpectedError(ex, "FetchClassMaster");
                 throw;
             }
         }
     }
 }
+
+

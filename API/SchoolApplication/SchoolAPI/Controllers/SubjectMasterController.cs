@@ -1,64 +1,64 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolAPI.DTOs;
+using SchoolAPI.Services;
 using SchoolApplication.Interface;
+using SchoolDomain.Entities;
 
 namespace SchoolAPI.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    [Authorize] // Default: Require authentication
-    public class SubjectMasterController : ControllerBase
+    /// <summary>
+    /// Controller for managing subject master data.
+    /// </summary>
+    [Authorize]
+    public class SubjectMasterController : BaseApiController
     {
-       private readonly ISubjectMasterRepository _subjectMasterRepository;
-       private readonly ILogger<SubjectMasterController> _logger;
+        private readonly ISubjectMasterRepository _subjectMasterRepository;
 
-       public SubjectMasterController(ISubjectMasterRepository subjectMasterRepository, ILogger<SubjectMasterController> logger)
-       {
-           _subjectMasterRepository = subjectMasterRepository;
-           _logger = logger;
-       }
-
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<IActionResult> MergeSubjectMaster([FromBody] SchoolDomain.Entities.SubjectMaster subjectMaster)
+        public SubjectMasterController(
+            ISubjectMasterRepository subjectMasterRepository,
+            ILogger<SubjectMasterController> logger,
+            IValidationService validationService)
+            : base(logger, validationService)
         {
-            if (!ModelState.IsValid)
+            _subjectMasterRepository = subjectMasterRepository ?? throw new ArgumentNullException(nameof(subjectMasterRepository));
+        }
+
+        /// <summary>
+        /// Merge (insert/update) a subject master record.
+        /// </summary>
+        [HttpPost("merge")]
+        [AllowAnonymous]
+        public async Task<IActionResult> MergeSubjectMaster([FromBody] SubjectMaster subjectMaster)
+        {
+            if (!ValidateModel(out var errors))
             {
-                var errors = string.Join("; ", ModelState.Values
-                    .SelectMany(v => v.Errors.Select(e => e.ErrorMessage)));
                 _logger.LogWarning("Invalid model state for MergeSubjectMaster. Errors: {Errors}", errors);
-                return BadRequest(new DTOs.ApiResponseDto<string>
-                {
-                    StatusCode = 400,
-                    Message = "Model validation failed.",
-                    Data = errors
-                });
+                return ValidationErrorResponse(errors);
             }
+
             try
             {
                 var result = await _subjectMasterRepository.MergeSubjectMasterAsync(subjectMaster);
                 _logger.LogInformation("Subject merged successfully. SubjectID: {SubjectId}", subjectMaster.SubjectId);
-                return Ok(new DTOs.ApiResponseDto<string>
-                {
-                    StatusCode = 200,
-                    Message = "Subject master record processed successfully.",
-                    Data = result
-                });
+                return SuccessResponse(result, "Subject master record processed successfully.", 200);
             }
             catch (InvalidOperationException ex)
             {
                 _logger.LogError(ex, "Business logic error merging SubjectMaster (SubjectID={SubjectId})", subjectMaster?.SubjectId);
-                return StatusCode(500, new DTOs.ApiResponseDto<string>
-                {
-                    StatusCode = 500,
-                    Message = "An error occurred while processing your request.",
-                    Data = null
-                });
+                return ErrorResponse("An error occurred while processing your request.", 500, "BUSINESS_LOGIC_ERROR");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error merging SubjectMaster (SubjectID={SubjectId})", subjectMaster?.SubjectId);
+                return ErrorResponse("An unexpected error occurred.", 500, "INTERNAL_SERVER_ERROR");
             }
         }
 
-        [HttpGet("FetchSubjectMaster")]
+        /// <summary>
+        /// Fetch all subject master records.
+        /// </summary>
+        [HttpGet("fetch")]
         [AllowAnonymous]
         public async Task<IActionResult> FetchSubjectMaster()
         {
@@ -68,23 +68,16 @@ namespace SchoolAPI.Controllers
 
                 _logger.LogInformation("Fetched {SubjectCount} subjects", subjects.Count());
 
-                var response = new
+                return SuccessResponse(new
                 {
                     Subjects = subjects,
                     SchoolDetails = schoolDetails
-                };
-
-                return Ok(new ApiResponseDto<object>
-                {
-                    StatusCode = 200,
-                    Message = "Success",
-                    Data = response
-                });
+                }, "Success");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while fetching subject master.");
-                throw; // Let GlobalExceptionMiddleware handle it
+                return ErrorResponse("An unexpected error occurred.", 500, "INTERNAL_SERVER_ERROR");
             }
         }
     }
