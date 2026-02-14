@@ -1,43 +1,40 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolAPI.DTOs;
+using SchoolAPI.Services;
 using SchoolApplication.Interface;
 using SchoolDomain.Entities;
 
 namespace SchoolAPI.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    [Authorize] // Default: Require authentication
-    public class ClassMasterController : ControllerBase
+    /// <summary>
+    /// Controller for managing class master data.
+    /// </summary>
+    [Authorize]
+    public class ClassMasterController : BaseApiController
     {
         private readonly IClassMasterRepository _classMasterRepository;
-        private readonly ILogger<ClassMasterController> _logger;
 
-        public ClassMasterController(IClassMasterRepository classMasterRepository, ILogger<ClassMasterController> logger)
+        public ClassMasterController(
+            IClassMasterRepository classMasterRepository,
+            ILogger<ClassMasterController> logger,
+            IValidationService validationService)
+            : base(logger, validationService)
         {
-            _classMasterRepository = classMasterRepository;
-            _logger = logger;
+            _classMasterRepository = classMasterRepository ?? throw new ArgumentNullException(nameof(classMasterRepository));
         }
 
-        [HttpPost("MergeClassMaster")]
+        /// <summary>
+        /// Merge (insert/update) a class master record.
+        /// </summary>
+        [HttpPost("merge")]
         [AllowAnonymous]
         public async Task<IActionResult> MergeClassMaster([FromBody] ClassMaster classMaster)
         {
-            // ModelState validation is automatic with [ApiController]
-            if (!ModelState.IsValid)
+            if (!ValidateModel(out var errors))
             {
-                var errors = string.Join("; ", ModelState.Values
-                    .SelectMany(v => v.Errors.Select(e => e.ErrorMessage)));
-                
                 _logger.LogWarning("Invalid model state for MergeClassMaster. Errors: {Errors}", errors);
-                
-                return BadRequest(new ApiResponseDto<string>
-                {
-                    StatusCode = 400,
-                    Message = "Model validation failed.",
-                    Data = errors
-                });
+                return ValidationErrorResponse(errors);
             }
 
             try
@@ -46,47 +43,30 @@ namespace SchoolAPI.Controllers
 
                 _logger.LogInformation("Class merged successfully. ClassID: {ClassId}", classMaster.ClassId);
 
-                return Ok(new ApiResponseDto<string>
-                {
-                    StatusCode = 200,
-                    Message = "Class master record processed successfully.",
-                    Data = result
-                });
+                return SuccessResponse(result, "Class master record processed successfully.", 200);
             }
             catch (InvalidOperationException ex)
             {
                 _logger.LogError(ex, "Business logic error merging ClassMaster (ClassID={ClassId})", classMaster?.ClassId);
-                return StatusCode(500, new ApiResponseDto<string>
-                {
-                    StatusCode = 500,
-                    Message = "An error occurred while processing your request.",
-                    Data = null
-                });
+                return ErrorResponse("An error occurred while processing your request.", 500, "BUSINESS_LOGIC_ERROR");
             }
             catch (ArgumentNullException ex)
             {
                 _logger.LogError(ex, "Null argument error in MergeClassMaster");
-                return BadRequest(new ApiResponseDto<string>
-                {
-                    StatusCode = 400,
-                    Message = "Invalid request data.",
-                    Data = null
-                });
+                return ErrorResponse("Invalid request data.", 400, "INVALID_ARGUMENT");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error merging ClassMaster (ClassID={ClassId})", classMaster?.ClassId);
-                return StatusCode(500, new ApiResponseDto<string>
-                {
-                    StatusCode = 500,
-                    Message = "An unexpected error occurred.",
-                    Data = null
-                });
+                return ErrorResponse("An unexpected error occurred.", 500, "INTERNAL_SERVER_ERROR");
             }
         }
 
-        [HttpGet("Fetch")]
-        [AllowAnonymous] // Read-only operation, safe to allow anonymous access
+        /// <summary>
+        /// Fetch all class master records.
+        /// </summary>
+        [HttpGet("fetch")]
+        [AllowAnonymous]
         public async Task<IActionResult> FetchClassMaster()
         {
             try
@@ -95,37 +75,23 @@ namespace SchoolAPI.Controllers
 
                 _logger.LogInformation("Fetched {ClassCount} classes", data.classes.Count());
 
-                return Ok(new ApiResponseDto<object>
+                return SuccessResponse(new
                 {
-                    StatusCode = 200,
-                    Message = "Success",
-                    Data = new
-                    {
-                        ClassMaster = data.classes,
-                        SchoolInfo = data.School
-                    }
-                });
+                    ClassMaster = data.classes,
+                    SchoolInfo = data.School
+                }, "Success");
             }
             catch (InvalidOperationException ex)
             {
                 _logger.LogError(ex, "Business logic error fetching ClassMaster");
-                return StatusCode(500, new ApiResponseDto<string>
-                {
-                    StatusCode = 500,
-                    Message = "An error occurred while retrieving class master records.",
-                    Data = null
-                });
+                return ErrorResponse("An error occurred while retrieving class master records.", 500, "BUSINESS_LOGIC_ERROR");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error fetching ClassMaster");
-                return StatusCode(500, new ApiResponseDto<string>
-                {
-                    StatusCode = 500,
-                    Message = "An unexpected error occurred.",
-                    Data = null
-                });
+                return ErrorResponse("An unexpected error occurred.", 500, "INTERNAL_SERVER_ERROR");
             }
         }
     }
 }
+
