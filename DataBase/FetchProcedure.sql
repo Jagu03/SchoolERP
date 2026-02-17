@@ -83,7 +83,7 @@ BEGIN
 END
 GO
 
--- EXEC SchoolAcad.FetchClassSectionAllocation @AcadYearId = 6
+-- EXEC SchoolAcad.FetchClassSectionAllocation @AcadYearId = 16
 
 ALTER PROCEDURE [SchoolAcad].[FetchClassSectionAllocation]
 (
@@ -115,10 +115,35 @@ BEGIN
     FROM Academic.FetchSemPeriodInfo() fsp
     INNER JOIN IBase.AllAcadYearInfo() ay ON fsp.AcadYearId = ay.AcadYearId
     INNER JOIN Data.Institutes i	      ON i.InstId = ay.instId
-	WHERE ay.isActive = 1
+	WHERE ay.isActive = 1 AND ay.AcadYearId = @AcadYearId
 END
 GO
 
+/*=========================================================================================================
+                                       FetchAllAcadYear
+============================================================================================================*/
+IF OBJECT_ID(N'[SchoolAcad].[FetchAllAcadYear] ',N'P') IS NULL
+BEGIN
+	EXEC sp_executesql N'CREATE PROCEDURE [SchoolAcad].[FetchAllAcadYear]  AS SELECT 1'
+END
+GO
+
+/*
+	EXEC [SchoolAcad].[FetchAllAcadYear] 
+*/
+
+ALTER PROCEDURE [SchoolAcad].[FetchAllAcadYear] 
+WITH ENCRYPTION
+AS
+BEGIN
+
+	SELECT ay.AcadYearId AS [AcadYearId]
+	 , ay.insShortName + ' :' +  ay.AcadYearName AS [txt]
+	 FROM IBase.AllAcadYearInfo() ay
+	 ORDER BY AcadYearName ASC
+
+END
+GO
 /*=========================================================================================================
                                        FetchSubjectMaster
 ============================================================================================================*/
@@ -141,8 +166,13 @@ BEGIN
 		,SM.SubjTypeId    AS SubjTypeId
 		,L.FullName       AS FullName
 		,SM.Remarks       AS Remarks
+		,L.LookupId       AS LookupId
+		,L.ShortName      AS ShortName
+		,L.ShowAs		  AS ShowAs
 	FROM SchoolAcad.SubjectMaster SM
-	LEFT JOIN Data.Lookups L ON SM.SubjTypeId = L.LookupId
+	INNER JOIN Data.Lookups L ON SM.SubjTypeId = L.LookupId
+	INNER JOIN Data.LookupTypes LT on LT.LookupTypeId = L.TypeId
+	WHERE LT.FullName = 'Subject Type'
 
 	SELECT fsp.id as semPeriodid, fsp.semPeriodName as [semPeriodName], ay.AcadYearName as [AcadYearName], ay.insFullname as [insFullname]
 	    , ay.insShortName as [insShortName], ay.location as [location]
