@@ -1,4 +1,43 @@
 /*=========================================================================================================
+                                       FetchAllAcadYear
+============================================================================================================*/
+IF OBJECT_ID(N'[SchoolAcad].[FetchAllAcadYear] ',N'P') IS NULL
+BEGIN
+	EXEC sp_executesql N'CREATE PROCEDURE [SchoolAcad].[FetchAllAcadYear]  AS SELECT 1'
+END
+GO
+
+/*
+	EXEC [SchoolAcad].[FetchAllAcadYear] 
+*/
+
+ALTER PROCEDURE [SchoolAcad].[FetchAllAcadYear] 
+WITH ENCRYPTION
+AS
+BEGIN
+
+	SELECT ay.AcadYearId AS [AcadYearId]
+	 ,ay.YearName AS [YearName]
+	 ,ay.FromDate AS [FromDate]
+	 ,ay.ToDate AS [ToDate]
+	 ,ay.IsActive AS [IsActive]
+     ,ay.CreatedUserId AS [CreatedUserId]
+	 FROM SchoolAcad.AcademicYear ay
+	 ORDER BY AcadYearId ASC
+
+	 	SELECT fsp.id as semPeriodid, fsp.semPeriodName as [semPeriodName], aay.AcadYearName as [AcadYearName], aay.insFullname as [insFullname]
+	    , aay.insShortName as [insShortName], aay.location as [location]
+	    , Logo1Image AS [logo1]
+	    , Logo2Image AS [logo2]
+	    , CASE WHEN Logo1Image IS NULL THEN 1 ELSE 0 END AS [logost1]
+	    , CASE WHEN Logo2Image IS NULL THEN 1 ELSE 0 END AS [logost2]
+    FROM Academic.FetchSemPeriodInfo() fsp
+    INNER JOIN IBase.AllAcadYearInfo() aay ON fsp.AcadYearId = aay.AcadYearId
+    INNER JOIN Data.Institutes i	      ON i.InstId = aay.instId
+	WHERE aay.isActive = 1
+END
+GO
+/*=========================================================================================================
                                        FetchClassMaster
 ============================================================================================================*/
 IF OBJECT_ID(N'SchoolAcad.FetchClassMaster',N'P') IS NULL
@@ -83,12 +122,12 @@ BEGIN
 END
 GO
 
--- EXEC SchoolAcad.FetchClassSectionAllocation @AcadYearId = 6
+-- EXEC SchoolAcad.FetchClassSectionAllocation @AcadYearId = 2
 
 ALTER PROCEDURE [SchoolAcad].[FetchClassSectionAllocation]
-(
-	@AcadYearId TINYINT
-)
+--(
+--	@AcadYearId TINYINT
+--)
 AS
 BEGIN
 	SELECT
@@ -99,12 +138,14 @@ BEGIN
 		,SM.SectionId AS SectionId
 		,SM.SectionName AS SectionName
 		,CSA.AcadYearId AS AcadYearId
+		,SAY.YearName AS YearName
 		,CSA.IsActive AS IsActive
 		,CSA.Remarks AS Remarks
 	FROM SchoolAcad.ClassSectionAllocation CSA
 	INNER JOIN SchoolAcad.ClassMaster CM ON CSA.ClassId = CM.ClassId
 	INNER JOIN SchoolAcad.SectionMaster SM ON CSA.SectionId = SM.SectionId
-	WHERE CSA.AcadYearId = @AcadYearId
+	INNER JOIN SchoolAcad.AcademicYear SAY ON SAY.AcadYearId = CSA.AcadYearId
+	--WHERE CSA.AcadYearId = @AcadYearId
 
 	SELECT fsp.id as semPeriodid, fsp.semPeriodName as [semPeriodName], ay.AcadYearName as [AcadYearName], ay.insFullname as [insFullname]
 	    , ay.insShortName as [insShortName], ay.location as [location]
@@ -115,9 +156,35 @@ BEGIN
     FROM Academic.FetchSemPeriodInfo() fsp
     INNER JOIN IBase.AllAcadYearInfo() ay ON fsp.AcadYearId = ay.AcadYearId
     INNER JOIN Data.Institutes i	      ON i.InstId = ay.instId
-	WHERE ay.isActive = 1
+	WHERE ay.isActive = 1 
 END
 GO
+
+/*=========================================================================================================
+                                       FetchTypeSubjectMaster
+============================================================================================================*/
+IF OBJECT_ID(N'SchoolAcad.FetchTypeSubjectMaster',N'P') IS NULL
+BEGIN
+	EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.FetchTypeSubjectMaster AS SELECT 1'
+END
+GO
+  -- EXEC SchoolAcad.FetchTypeSubjectMaster
+
+ALTER PROCEDURE SchoolAcad.FetchTypeSubjectMaster
+AS
+BEGIN
+    SELECT STYM.SubjTypeId AS SubjTypeId
+	, STYM.ShortName AS ShortName
+	, STYM.ShowAs    AS ShowAs
+	, STYM.IsActive  AS IsActive
+	, STYM.CreatedUserId AS CreatedUserId
+	, STYM.LoginId AS LoginId
+	FROM SchoolAcad.SubjectTypeMaster STYM
+  
+END
+GO
+
+
 
 /*=========================================================================================================
                                        FetchSubjectMaster
@@ -139,10 +206,11 @@ BEGIN
 		,SM.ShortName     AS ShortName
 		,SM.IsChoice      AS IsChoice
 		,SM.SubjTypeId    AS SubjTypeId
-		,L.FullName       AS FullName
 		,SM.Remarks       AS Remarks
+		,STM.FullName     AS FullName
+		,STM.ShortName    AS ShortName
 	FROM SchoolAcad.SubjectMaster SM
-	LEFT JOIN Data.Lookups L ON SM.SubjTypeId = L.LookupId
+	INNER JOIN SchoolAcad.SubjectTypeMaster STM ON SM.SubjTypeId = STM.SubjTypeId
 
 	SELECT fsp.id as semPeriodid, fsp.semPeriodName as [semPeriodName], ay.AcadYearName as [AcadYearName], ay.insFullname as [insFullname]
 	    , ay.insShortName as [insShortName], ay.location as [location]
@@ -166,7 +234,7 @@ BEGIN
 	EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.FetchClassSectionSubjectMap AS SELECT 1'
 END
 GO
-  -- EXEC SchoolAcad.FetchClassSectionSubjectMap @ClassId = 2 ,@AcadYearId = 16 , @SectionId = 3
+  -- EXEC SchoolAcad.FetchClassSectionSubjectMap @ClassId = 2 ,@AcadYearId = 6 , @SectionId = 3
 
 ALTER PROCEDURE SchoolAcad.FetchClassSectionSubjectMap
 (
@@ -223,6 +291,7 @@ BEGIN
 	EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.FetchSyllabusFinalization AS SELECT 1'
 END
 GO
+
     -- EXEC SchoolAcad.FetchSyllabusFinalization @ClassId = 2  ,@AcadYearId = 6
 ALTER PROCEDURE SchoolAcad.FetchSyllabusFinalization
 (
@@ -449,7 +518,7 @@ BEGIN
     EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.FetchAssignments AS SELECT 1'
 END
 GO
-    -- EXEC SchoolAcad.FetchAssignments @ClassId = 4 , @SubjectId = 4 , @AcadYearId = 6
+    -- EXEC SchoolAcad.FetchAssignments @ClassId = 7 , @SubjectId = 4 , @AcadYearId = 10
 ALTER PROCEDURE SchoolAcad.FetchAssignments
 (
     @ClassId INT,
@@ -459,21 +528,104 @@ ALTER PROCEDURE SchoolAcad.FetchAssignments
 )
 AS
 BEGIN
-    SELECT AssignmentId ,
-        AssignmentType,
-        Title,
-        GivenDate,
-        DueDate,
-        MaxMarks
-    FROM SchoolAcad.AssignmentMaster
-    WHERE ClassId = @ClassId
+    SELECT AM.AssignmentId AS AssignmentId,
+        AM.AssignmentType AS AssignmentType,
+        AM.Title AS Title,
+        AM.GivenDate AS GivenDate,
+        AM.DueDate AS DueDate,
+        AM.MaxMarks AS MaxMarks,
+		sbi.StaffId AS StaffId,
+		sbi.FullName AS StaffName
+    FROM SchoolAcad.AssignmentMaster AM
+	INNER JOIN Staff.BasicInfo sbi ON sbi.StaffId = AM.StaffId
+    WHERE AM.ClassId = @ClassId
       --AND SectionId = @SectionId
-      AND SubjectId = @SubjectId
-      AND AcadYearId = @AcadYearId
-      AND IsActive = 1
+      AND AM.SubjectId = @SubjectId
+      AND AM.AcadYearId = @AcadYearId
+      AND AM.IsActive = 1
+
+END
+GO
+/*=========================================================================================================
+                                       AssignmentSubmissionGetByStudent
+============================================================================================================*/
+IF OBJECT_ID(N'SchoolAcad.AssignmentSubmissionGetByStudent', N'P') IS NULL
+BEGIN
+    EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.AssignmentSubmissionGetByStudent AS SELECT 1'
 END
 GO
 
+ -- EXEC SchoolAcad.AssignmentSubmissionGetByStudent @AssignmentId = 2 , @StudentId = 3930
+ALTER PROCEDURE SchoolAcad.AssignmentSubmissionGetByStudent
+(
+    @AssignmentId INT,
+    @StudentId    INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+	SELECT A.AssignmentId,
+        A.Title,
+        A.GivenDate,
+        A.DueDate,
+        A.MaxMarks,
+        CASE WHEN CAST(GETDATE() AS DATE) > A.DueDate THEN 'Expired' ELSE 'Active' END AS AssignmentStatus,
+        S.SubmissionId,
+        S.FileName,
+        S.FilePath,
+        S.FileType,
+        S.UploadedDateTime,
+        S.Remarks
+
+    FROM SchoolAcad.AssignmentMaster A
+    LEFT JOIN SchoolAcad.AssignmentSubmission S
+        ON A.AssignmentId = S.AssignmentId
+        AND S.StudentId = @StudentId
+        AND S.IsActive = 1
+    WHERE A.AssignmentId = @AssignmentId
+      AND A.IsActive = 1;
+END
+GO
+/*=========================================================================================================
+                                       AssignmentSubmissionGetByAssignment
+============================================================================================================*/
+IF OBJECT_ID(N'SchoolAcad.AssignmentSubmissionGetByAssignment', N'P') IS NULL
+BEGIN
+    EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.AssignmentSubmissionGetByAssignment AS SELECT 1'
+END
+GO
+ALTER PROCEDURE SchoolAcad.AssignmentSubmissionGetByAssignment
+(
+     @AssignmentId INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+	SELECT 
+        S.SubmissionId,
+        S.StudentId,
+        ST.StudentName,
+        S.FileName,
+        S.FileType,
+        S.UploadedDateTime,
+        S.Remarks,
+        CASE 
+            WHEN CAST(S.UploadedDateTime AS DATE) > A.DueDate 
+            THEN 'Late'
+            ELSE 'On Time'
+        END AS SubmissionStatus
+
+    FROM SchoolAcad.AssignmentSubmission S
+    INNER JOIN SchoolAcad.AssignmentMaster A
+        ON A.AssignmentId = S.AssignmentId
+    INNER JOIN Academic.StudAdmnInfo ST
+        ON ST.StudentId = S.StudentId
+    WHERE S.AssignmentId = @AssignmentId
+      AND S.IsActive = 1
+    ORDER BY S.UploadedDateTime DESC;
+END
+GO
 /*=========================================================================================================
                                        FetchAssignmentStudentMarks
 ============================================================================================================*/
@@ -625,11 +777,11 @@ BEGIN
     EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.FetchStudentCurrentClass AS SELECT 1'
 END
 GO
-
+ -- exec SchoolAcad.FetchStudentCurrentClass @StudentId =3930 ,  @AcadYearId = 10
 ALTER PROCEDURE SchoolAcad.FetchStudentCurrentClass
 (
       @StudentId  INT
-    , @AcadYearCr TINYINT
+    , @AcadYearId TINYINT
 )
 AS
 BEGIN
@@ -643,9 +795,9 @@ BEGIN
     FROM SchoolAcad.StudClasses sc
     INNER JOIN Academic.StudAdmnInfo s ON s.StudentId = sc.StudentId
     INNER JOIN SchoolAcad.ClassMaster c ON c.ClassId = sc.ClassId
-    INNER JOIN IBase.AcadYear ay ON ay.AcadYearId = sc.AcadYearCr
+    INNER JOIN SchoolAcad.AcademicYear ay ON ay.AcadYearId = sc.AcadYearId
     WHERE sc.StudentId = @StudentId
-      AND sc.AcadYearCr = @AcadYearCr
+      AND sc.AcadYearId = @AcadYearId
 END
 GO
 
@@ -656,10 +808,10 @@ BEGIN
     EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.FetchClassStudents AS SELECT 1'
 END
 GO
-
+ -- Exec SchoolAcad.FetchClassStudents @AcadYearId = 10 , @ClassId = 7
 ALTER PROCEDURE SchoolAcad.FetchClassStudents
 (
-      @AcadYearCr TINYINT
+      @AcadYearId TINYINT
     , @ClassId    INT
 )
 AS
@@ -669,11 +821,69 @@ BEGIN
     SELECT
         sc.StudClassId,
         sc.StudentId,
-        s.StudentName
+        s.FullName
     FROM SchoolAcad.StudClasses sc
     INNER JOIN Academic.StudAdmnInfo s ON s.StudentId = sc.StudentId
-    WHERE sc.AcadYearCr = @AcadYearCr
+    WHERE sc.AcadYearId = @AcadYearId
       AND sc.ClassId = @ClassId
     ORDER BY s.StudentName
 END
 GO
+
+
+-- exec SchoolAcad.FetchAssignmentsForStudent @StudentId = 3930
+
+CREATE PROCEDURE SchoolAcad.FetchAssignmentsForStudent
+(
+    @StudentId INT
+)
+AS
+BEGIN
+
+    SET NOCOUNT ON;
+
+    SELECT 
+        A.AssignmentId,
+        A.Title,
+        A.TitleDescription,
+        A.GivenDate,
+        A.DueDate,
+        A.MaxMarks,
+        S.SubjectName,
+        C.ClassName,
+        Sec.SectionName,
+
+        CASE 
+            WHEN Sub.SubmissionId IS NOT NULL THEN 'Submitted'
+            WHEN GETDATE() > A.DueDate THEN 'Expired'
+            ELSE 'Active'
+        END AS Status
+
+    FROM SchoolAcad.AssignmentMaster A
+
+    INNER JOIN SchoolAcad.StudClasses SC
+        ON SC.ClassId = A.ClassId
+        AND SC.SectionId = A.SectionId
+        AND SC.AcadYearId = A.AcadYearId
+        AND SC.StudentId = @StudentId
+        AND SC.IsActive = 1
+
+    INNER JOIN SchoolAcad.SubjectMaster S
+        ON S.SubjectId = A.SubjectId
+
+    INNER JOIN SchoolAcad.ClassMaster C
+        ON C.ClassId = A.ClassId
+
+    INNER JOIN SchoolAcad.SectionMaster Sec
+        ON Sec.SectionId = A.SectionId
+
+    LEFT JOIN SchoolAcad.AssignmentSubmission Sub
+        ON Sub.AssignmentId = A.AssignmentId
+        AND Sub.StudentId = @StudentId
+        AND Sub.IsActive = 1
+
+    WHERE A.IsActive = 1
+
+    ORDER BY A.GivenDate DESC
+
+END

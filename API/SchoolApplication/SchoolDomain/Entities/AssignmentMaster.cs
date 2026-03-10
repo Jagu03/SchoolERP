@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SchoolDomain.Entities
+﻿namespace SchoolDomain.Entities
 {
     public class AssignmentMaster
     {
@@ -14,6 +8,7 @@ namespace SchoolDomain.Entities
         public int SectionId { get; set; }
         public int SubjectId { get; set; }
         public int StaffId { get; set; }
+        public string StaffName { get; set; } = string.Empty;
         public string AssignmentType { get; set; } = string.Empty; // Assignment / Homework
         public string Title { get; set; } = string.Empty;
         public string TitleDescription { get; set; } = string.Empty;

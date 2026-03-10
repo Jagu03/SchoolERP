@@ -67,20 +67,14 @@ namespace SchoolAPI.Controllers
         /// </summary>
         [HttpGet("fetch")]
         [AllowAnonymous]
-        public async Task<IActionResult> FetchClassSectionAllocations([FromQuery] byte acadYearId)
-        {
-            if (acadYearId <= 0)
-            {
-                _logger.LogWarning("Invalid AcadYearId provided: {AcadYearId}", acadYearId);
-                return ErrorResponse("AcadYearId query parameter is required and must be greater than 0.", 400, "INVALID_PARAMETER");
-            }
+        public async Task<IActionResult> FetchClassSectionAllocations()
+        {          
 
             try
             {
-                var data = await _classSectionAllocationRepository.FetchClassSectionAllocationsAsync(acadYearId);
+                var data = await _classSectionAllocationRepository.FetchClassSectionAllocationsAsync();
 
-                _logger.LogInformation("Fetched {AllocationCount} allocations for academic year {AcadYearId}",
-                    data.allocations.Count(), acadYearId);
+                _logger.LogInformation("Fetched {AllocationCount} allocations", data.allocations.Count());
 
                 return SuccessResponse(new
                 {
@@ -90,7 +84,7 @@ namespace SchoolAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error fetching ClassSectionAllocations for academic year {AcadYearId}", acadYearId);
+                _logger.LogError(ex, "Error fetching ClassSectionAllocations ");
                 return ErrorResponse("An unexpected error occurred.", 500, "INTERNAL_SERVER_ERROR");
             }
         }

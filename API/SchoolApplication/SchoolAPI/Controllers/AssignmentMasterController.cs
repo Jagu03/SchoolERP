@@ -4,6 +4,7 @@ using SchoolAPI.DTOs;
 using SchoolAPI.Services;
 using SchoolApplication.Interface;
 using SchoolDomain.Entities;
+using SchoolInfrastructure;
 
 namespace SchoolAPI.Controllers
 {
@@ -50,6 +51,32 @@ namespace SchoolAPI.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error merging AssignmentMaster (EditId={EditId})", assignmentMaster?.EditId);
+                return ErrorResponse("An unexpected error occurred.", 500, "INTERNAL_SERVER_ERROR");
+            }
+        }
+
+        [HttpGet("fetch")]
+        [AllowAnonymous]
+        public async Task<IActionResult> FetchAssignmentMaster([FromQuery] int classId, int subjectId, short acadYearId)
+        {
+            try
+            {
+                var assignmentMasters = await _assignmentMasterRepository.FetchAssignmentMasterAsync( classId, subjectId, acadYearId); 
+                _logger.LogInformation("Fetched {AssignmentMasterCount} assignment masters for ClassId={ClassId}, SubjectId={SubjectId}, AcadYearId={AcadYearId}", assignmentMasters.Count(), classId, subjectId, acadYearId);
+
+                return SuccessResponse(new
+                {
+                    AssignmentMasters = assignmentMasters
+                }, "Success");
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "Business logic error fetching AssignmentMaster");
+                return ErrorResponse("An error occurred while retrieving assignment master records.", 500, "BUSINESS_LOGIC_ERROR");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error fetching AssignmentMaster");
                 return ErrorResponse("An unexpected error occurred.", 500, "INTERNAL_SERVER_ERROR");
             }
         }
