@@ -168,12 +168,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
-// Authentication and Authorization before CORS
-app.UseAuthentication();
-app.UseAuthorization();
 
 // CORS after authentication
 app.UseCustomCors();
+
+// Authentication and Authorization before CORS
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

@@ -4,6 +4,7 @@ using SchoolInfrastructure.Repositories;
 using SchoolInfrastructure.Repositories.YearlyEvents;
 using SchoolInfrastructure.Services;
 using SchoolAPI.Services;
+using SchoolInfrastructure;
 
 namespace SchoolAPI.Extensions
 {
@@ -23,6 +24,7 @@ namespace SchoolAPI.Extensions
             services.AddScoped<IStudentAuthenticationService, StudentAuthenticationService>();
 
             // Repository Dependencies
+            services.AddScoped<IAcadYearRepository, AcadYearRepository>();
             services.AddScoped<IClassMasterRepository, ClassMasterRepository>();
             services.AddScoped<ISectionMasterRepository, SectionMasterRepository>();
             services.AddScoped<IClassSectionAllocationRepository, ClassSectionAllocationRepository>();
@@ -33,6 +35,7 @@ namespace SchoolAPI.Extensions
             services.AddScoped<ILessonPlanRepository, LessonPlanRepository>();
             services.AddScoped<IClassroomTeachingRepository, ClassroomTeachingRepository>();
             services.AddScoped<IAssignmentMasterRepository, AssignmentMasterRepository>();
+            services.AddScoped<ISubjectTypeMasterRepository, SubjectTypeMasterRepository>();    
 
             return services;
         }

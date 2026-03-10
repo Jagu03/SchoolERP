@@ -4,33 +4,25 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SchoolApplication.Interface;
 using SchoolDomain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
+using static System.Collections.Specialized.BitVector32;
 
 namespace SchoolInfrastructure.Repositories
 {
-    public class AssignmentMasterRepository : IAssignmentMasterRepository
-    {
-        private readonly string _connectionString;
-        private readonly ILogger<AssignmentMasterRepository> _logger;
-
+    public class AssignmentMasterRepository : BaseRepository, IAssignmentMasterRepository
+    {  
         public AssignmentMasterRepository(IConfiguration configuration, ILogger<AssignmentMasterRepository> logger)
+            : base(configuration, logger)
         {
-            _connectionString = configuration.GetConnectionString("LiveDBContext") ?? string.Empty;
-            _logger = logger;
-            if (string.IsNullOrWhiteSpace(_connectionString))
-            {
-                throw new InvalidOperationException("Connection string 'LiveDBContext' is not configured. Configure it in appsettings.json or an environment variable.");
-            }
+            
         }
 
         public async Task<string> MergeAssignmentMasterAsync(AssignmentMaster assignmentMaster)
         {
-            await using var connection = new SqlConnection(_connectionString);
+            ArgumentNullException.ThrowIfNull(assignmentMaster);
+            try
             {
+                await using var connection = CreateConnection();
                 var parameters = new DynamicParameters();
                 parameters.Add("@EditId", assignmentMaster.EditId);
                 parameters.Add("@AcadYearId", assignmentMaster.AcadYearId);
@@ -47,11 +39,50 @@ namespace SchoolInfrastructure.Repositories
                 parameters.Add("@Remarks", assignmentMaster.Remarks);
                 parameters.Add("@CreatedUserId", assignmentMaster.CreatedUserId);
                 parameters.Add("@LoginId", assignmentMaster.LoginId);
-                parameters.Add("@Result", dbType: System.Data.DbType.String, direction: System.Data.ParameterDirection.Output, size: 500);
+                parameters.Add("@Result", dbType: DbType.String, size: 350, direction: ParameterDirection.Output);
+
                 await connection.ExecuteAsync("SchoolAcad.MergeAssignment"
                     , parameters, commandType: System.Data.CommandType.StoredProcedure);
+
                 return parameters.Get<string>("@Result") ?? string.Empty;
             }
-        }   
+            catch (SqlException ex)
+            {
+                throw HandleDatabaseError(ex, "MergeAssignmentMaster", $"EditId={assignmentMaster.EditId}");
+            }
+            catch (Exception ex)
+            {
+                LogUnexpectedError(ex, "MergeAssignmentMaster", $"EditId={assignmentMaster.EditId}");
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<AssignmentMaster>> FetchAssignmentMasterAsync(int classId,int subjectId,short acadYearId)
+        {
+            try
+            {
+                await using var connection = CreateConnection();
+                var parameters = new DynamicParameters();
+                parameters.Add("@ClassId", classId, DbType.Int16);
+                parameters.Add("@SubjectId", subjectId, DbType.Int16);
+                parameters.Add("@AcadYearId", acadYearId, DbType.Int16);
+                await using var multi = await connection.QueryMultipleAsync(
+                    "[SchoolAcad].[FetchAssignments]", parameters,commandType: CommandType.StoredProcedure);
+
+                var assignmentMasters = (await multi.ReadAsync<AssignmentMaster>()).ToList();
+
+                Logger.LogInformation("Fetched {assignmentMasters} assignmentMasters successfully");
+                return assignmentMasters;
+            }
+            catch (SqlException ex)
+            {
+                throw HandleDatabaseError(ex, "FetchAssignmentMaster");
+            }
+            catch (Exception ex)
+            {
+                LogUnexpectedError(ex, "FetchAssignmentMaster");
+                throw;
+            }
+        }
     }
 }

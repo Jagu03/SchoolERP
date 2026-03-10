@@ -43,15 +43,12 @@ namespace SchoolInfrastructure.Repositories
             return parameters.Get<string>("@result") ?? string.Empty;
         }
 
-        public async Task<(IEnumerable<ClassSectionAllocation> allocations, IEnumerable<SchoolInfo> SchoolDetails)> FetchClassSectionAllocationsAsync(byte acadYearId)
+        public async Task<(IEnumerable<ClassSectionAllocation> allocations, IEnumerable<SchoolInfo> SchoolDetails)> FetchClassSectionAllocationsAsync()
         {
-            await using var connection = new SqlConnection(_connectionString);
-            var parameters = new DynamicParameters();
-            parameters.Add("@AcadYearId", acadYearId, DbType.Int16);
-
+            await using var connection = new SqlConnection(_connectionString); 
             await using var multi = await connection.QueryMultipleAsync(
                 "[SchoolAcad].[FetchClassSectionAllocation]",
-                parameters,
+               
                 commandType: CommandType.StoredProcedure);
 
             // Materialize the first result set immediately

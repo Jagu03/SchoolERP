@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SchoolAPI.DTOs;
 using SchoolAPI.Services;
 using SchoolApplication.Interface;
 using SchoolDomain.Entities;

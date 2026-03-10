@@ -1,3 +1,58 @@
+IF OBJECT_ID(N'SchoolAcad.MergeAcademicYears', N'P') IS NULL
+BEGIN
+    EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.MergeAcademicYears AS SELECT 1'
+END
+GO
+
+ALTER PROCEDURE [SchoolAcad].[MergeAcademicYears]
+(
+      @EditId           TINYINT = 0
+    , @YearName         NVARCHAR(100)
+    , @FromDate         DATETIME
+    , @ToDate           DATETIME
+    , @IsActive         TINYINT
+    , @CreatedUserId	SMALLINT	
+	, @LoginId			BIGINT = 0
+	, @result           NVARCHAR(350) = '' OUTPUT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    -- INSERT
+    IF @EditId = 0
+    BEGIN
+
+        INSERT INTO SchoolAcad.AcademicYear (YearName,FromDate,ToDate,IsActive,CreatedUserId,LoginId )
+        VALUES (@YearName,@FromDate,@ToDate,@IsActive,@CreatedUserId,@LoginId);
+
+        SET @Result = 'Academic Year saved successfully.';
+    END
+    ELSE
+    BEGIN
+        -- UPDATE
+        IF EXISTS (SELECT 1 FROM SchoolAcad.AcademicYear
+                   WHERE YearName = @YearName
+                   AND AcadYearId <> @EditId)
+        BEGIN
+            SET @Result = 'YearName already exists.';
+            RETURN;
+        END
+
+        UPDATE SchoolAcad.AcademicYear
+        SET            
+            YearName     = @YearName,
+            FromDate     = @FromDate,
+            ToDate       = @ToDate,
+            IsActive     = @IsActive            
+        WHERE AcadYearId = @EditId;
+
+        SET @Result = 'Academic Year updated successfully.';
+    END
+
+    SET NOCOUNT OFF;
+END
+GO
+
 /*=========================================================================================================
                                        MergeClassMaster
 ============================================================================================================*/
@@ -175,6 +230,48 @@ BEGIN
 	SET NOCOUNT OFF;
 END
 GO
+
+/*=========================================================================================================
+                                       AddNewStudentClass
+============================================================================================================*/
+IF OBJECT_ID(N'SchoolAcad.AddNewStudentClass', N'P') IS NULL
+BEGIN
+    EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.AddNewStudentClass AS SELECT 1'
+END
+GO
+
+ALTER PROCEDURE SchoolAcad.AddNewStudentClass
+(
+      @StudentId     INT
+    , @AcadYearId    TINYINT
+    , @ClassId       INT
+	, @SectionId     INT
+	, @IsActive      BIT
+    , @CreatedUserId SMALLINT
+    , @Result        NVARCHAR(300) OUTPUT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (
+        SELECT 1 FROM SchoolAcad.StudClasses
+        WHERE StudentId = @StudentId
+          AND AcadYearId = @AcadYearId AND SectionId = @SectionId
+    )
+    BEGIN
+        SET @Result = 'Student already exists for this academic year.'
+        RETURN
+    END
+
+    INSERT INTO SchoolAcad.StudClasses (StudentId, AcadYearId,ClassId,SectionId,IsActive,CreatedUserId)
+    VALUES(@StudentId,@AcadYearId,@ClassId,@SectionId,@IsActive,@CreatedUserId)
+
+    SET @Result = 'New student admitted successfully.'
+    SET NOCOUNT OFF;
+
+END
+GO
 /*=========================================================================================================
                                        MergeSubjectMaster
 ============================================================================================================*/
@@ -235,6 +332,65 @@ BEGIN
 		END
 
 	SET NOCOUNT OFF;
+END
+GO
+/*=========================================================================================================
+                                       MergeSubjectTypeMaster
+============================================================================================================*/
+IF OBJECT_ID(N'SchoolAcad.MergeSubjectTypeMaster', N'P') IS NULL
+BEGIN
+	EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.MergeSubjectTypeMaster AS SELECT 1'
+END
+GO
+
+ALTER PROCEDURE SchoolAcad.MergeSubjectTypeMaster 
+(
+    @EditId            INT = 0
+	, @FullName        NVARCHAR(100)
+	, @ShortName       NVARCHAR(50)
+	, @ShowAs          NVARCHAR(50)
+	, @IsActive        BIT		
+	, @CreatedUserId   SMALLINT
+	, @LoginId         BIGINT
+	, @result          NVARCHAR(300) OUTPUT 
+)
+
+WITH ENCRYPTION
+AS
+BEGIN
+       SET NOCOUNT ON;
+
+	   IF @EditId = 0
+	   BEGIN
+	       IF EXISTS (SELECT 1 FROM SchoolAcad.SubjectTypeMaster WHERE FullName = @FullName AND ShortName = @ShortName 
+		         AND ShowAs = @ShowAs)
+		   BEGIN
+		       SET @result = 'Subject Type Already Mapped'
+		   END
+		   ELSE
+		   BEGIN
+			   INSERT INTO SchoolAcad.SubjectTypeMaster(FullName,ShortName,ShowAs,IsActive,
+					  CreatedUserId,LoginId)
+			   VALUES (@FullName,@ShortName,@ShowAs,@IsActive,@CreatedUserId,@LoginId)
+
+			   SET @result = 'Subject Type Saved Successfully'
+		    END
+		END
+		ELSE 
+		BEGIN
+		     UPDATE SchoolAcad.SubjectTypeMaster
+		     SET
+			   FullName = @FullName,
+			   ShortName = @ShortName,
+			   ShowAs = @ShowAs,
+			   IsActive = @IsActive,
+			   CreatedUserId = @CreatedUserId,
+			   LoginId = @LoginId
+		     WHERE SubjTypeId = @EditId
+
+		     SET @result = 'Subject Type Updated.'
+        END
+ 	    SET NOCOUNT OFF;
 END
 GO
 
@@ -773,6 +929,59 @@ SET NOCOUNT ON
 	END
 END
 GO
+/*=========================================================================================================
+                                       MergeAssignmentSubmission
+============================================================================================================*/
+IF OBJECT_ID(N'SchoolAcad.MergeAssignmentSubmission', N'P') IS NULL
+BEGIN
+    EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.MergeAssignmentSubmission AS SELECT 1'
+END
+GO
+ALTER PROCEDURE SchoolAcad.MergeAssignmentSubmission
+(
+    @AssignmentId     INT,
+    @StudentId        INT,
+    @FileName         NVARCHAR(500),
+    @FilePath         NVARCHAR(1000),
+    @FileType         NVARCHAR(50),
+    @Remarks          NVARCHAR(500) = NULL,
+    @CreatedUserId    SMALLINT,
+    @LoginId          BIGINT,
+	@Result			  NVARCHAR(350) = '' OUTPUT
+)
+AS
+BEGIN
+SET NOCOUNT ON 
+    IF NOT EXISTS (SELECT 1 FROM SchoolAcad.AssignmentMaster WHERE AssignmentId = @AssignmentId AND IsActive = 1)
+    BEGIN
+        RAISERROR('Invalid Assignment.',16,1);
+        RETURN;
+    END
+
+	 -- Validate Student
+    IF NOT EXISTS (SELECT 1 FROM Academic.StudAdmnInfo WHERE StudentId = @StudentId)
+    BEGIN
+        RAISERROR('Invalid Student.',16,1);
+        RETURN;
+    END
+
+	-- Deactivate previous submission (if re-upload allowed)
+    UPDATE SchoolAcad.AssignmentSubmission
+    SET IsActive = 0
+    WHERE AssignmentId = @AssignmentId
+      AND StudentId = @StudentId
+      AND IsActive = 1;
+
+	 -- Insert New Submission
+    INSERT INTO SchoolAcad.AssignmentSubmission (AssignmentId,StudentId,FileName,FilePath,
+                FileType,UploadedDateTime,IsActive,Remarks,CreatedUserId,LoginId)
+	VALUES (@AssignmentId,@StudentId,@FileName,@FilePath,@FileType, GETDATE(),
+           1,@Remarks,@CreatedUserId,@LoginId);
+	SET @Result = 'AssignmentSubmission Save Successfully.'
+ END
+SET NOCOUNT OFF
+GO
+
 
 /*=========================================================================================================
                                        MergeAssignmentStudentMark
@@ -801,6 +1010,11 @@ BEGIN
 SET NOCOUNT ON 
    IF @EditId = 0
    BEGIN
+	    IF EXISTS (SELECT 1 FROM SchoolAcad.AssignmentStudentMark  WHERE AssignmentId=@AssignmentId AND StudentId=@StudentId)
+		BEGIN
+		   SET @Result='Mark already exists.'
+		   RETURN
+		END
 		INSERT INTO SchoolAcad.AssignmentStudentMark (AssignmentId, StudentId,
 			SubmissionStatus, ObtainedMarks,SubmissionDate, Remarks, CreatedUserId,LoginId)
 		VALUES(@AssignmentId, @StudentId,@SubmissionStatus, @ObtainedMarks,
@@ -942,40 +1156,6 @@ BEGIN
 END
 GO
 
-/*=========================================================================================================
-                                       SaveTimeTable
-============================================================================================================*/
-IF OBJECT_ID(N'SchoolAcad.SaveTimeTable', N'P') IS NULL
-BEGIN
-    EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.SaveTimeTable AS SELECT 1'
-END
-GO
-
-ALTER PROCEDURE SchoolAcad.SaveTimeTable
-(    
-    @AcadYearId     TINYINT,
-    @ClassId        INT,
-    @SectionId      INT,
-    @DayId          SMALLINT,
-    @HourId         INT,
-	@hourList		NVARCHAR(500) = '',
-    @PeriodNoId     TINYINT,
-    @SubjectId      INT,
-    @StaffId        INT,
-    @Remarks        NVARCHAR(500),
-    @CreatedUserId  SMALLINT,
-    @LoginId        BIGINT,
-    @Result         NVARCHAR(300) OUTPUT
-)
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    
-
-    SET NOCOUNT OFF;
-END
-GO
 
 /*=========================================================================================================
                                       
@@ -1043,96 +1223,3 @@ END
 GO
 
 
-IF OBJECT_ID(N'SchoolAcad.AddNewStudentClass', N'P') IS NULL
-BEGIN
-    EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.AddNewStudentClass AS SELECT 1'
-END
-GO
-
-ALTER PROCEDURE SchoolAcad.AddNewStudentClass
-(
-      @StudentId     INT
-    , @AcadYearCr    TINYINT
-    , @ClassId       INT
-    , @CreatedUserId SMALLINT
-    , @Result        NVARCHAR(300) OUTPUT
-)
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    IF EXISTS (
-        SELECT 1 FROM SchoolAcad.StudClasses
-        WHERE StudentId = @StudentId
-          AND AcadYearCr = @AcadYearCr
-    )
-    BEGIN
-        SET @Result = 'Student already exists for this academic year.'
-        RETURN
-    END
-
-    INSERT INTO SchoolAcad.StudClasses
-    (
-        StudentId,
-        AcadYearCr,
-        ClassId,
-        CreatedUserId
-    )
-    VALUES
-    (
-        @StudentId,
-        @AcadYearCr,
-        @ClassId,
-        @CreatedUserId
-    )
-
-    SET @Result = 'New student admitted successfully.'
-    SET NOCOUNT OFF;
-END
-GO
-
-
-
-IF OBJECT_ID(N'SchoolAcad.SaveAttendance_ForClass_Ondate', N'P') IS NULL
-BEGIN
-    EXEC sp_executesql N'CREATE PROCEDURE SchoolAcad.SaveAttendance_ForClass_Ondate AS SELECT 1'
-END
-GO
-
-CREATE PROCEDURE [SchoolAcad].[SaveAttendance_ForClass_Ondate]
-(
-  @ClassId         INT
-  ,@StudList       NVARCHAR(MAX)
-  ,@attendanceStatusId SMALLINT
-  ,@dateStr        NVARCHAR(15)
-  ,@sessionId      TINYINT    -- 1.Fullday 2.FN 3.AN
-  ,@remarks        NVARCHAR(500) = NULL
-  ,@studStat       TINYINT = 1
-  ,@CreatedUserId  SMALLINT
-  ,@LoginId        BIGINT
-  ,@Result         NVARCHAR(300) OUTPUT
-)
-
-AS
-BEGIN
-
-    SET NOCOUNT ON;
-
-    DECLARE @dateId int
-
-    SET @dateId = CONVERT(int, CONVERT(datetime , @dateStr , 103))
-
-    ;WITH StudList AS(
-        SELECT sai.StudentId 
-        FROM Academic.StudAdmnInfo sai
-        INNER JOIN SchoolAcad.StudClasses SC ON SC.StudentId  = sai.StudentId
-        WHERE SC.ClassId = @ClassId
-              AND sai.StudStat = CASE @studStat WHEN 2 THEN sai.StudStat ELSE @studStat END
-	    EXCEPT
-	    SELECT studentId FROM [SchoolAcad].[SchoolAttendance]
-	    WHERE classId= @classId AND DateId = @DateId
-     )
-
-    SET NOCOUNT OFF;
-END
-GO
