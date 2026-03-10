@@ -25,7 +25,6 @@ BEGIN
     -- CREATE SCHEMA SchoolAcad
     -- SELECT * FROM SchoolAcad.ClassMaster
 	-- DROP TABLE SchoolAcad.ClassMaster
-	-- DELETE SchoolAcad.ClassMaster
 	CREATE TABLE SchoolAcad.ClassMaster
 	(
 	 ClassId            INT		        NOT NULL	IDENTITY(1,1)
